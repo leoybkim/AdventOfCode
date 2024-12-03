@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 
-def find_total_distance(input_file_path: str):
+def find_total_distance(input_file_path: str) -> int:
     """
     Read the input file
     Separate the left and right columns and sort the two list in ascending order
@@ -27,7 +27,7 @@ def find_total_distance(input_file_path: str):
     return total_distance
 
 
-def find_similarity_score(input_file_path: str):
+def find_similarity_score(input_file_path: str) -> int:
     """
     Read the input file
     Separate the left and right columns
