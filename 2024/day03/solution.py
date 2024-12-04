@@ -16,10 +16,14 @@ def sum_disabled_multiplications(data: str) -> int:
         matches += re.findall(pattern, line)
     return sum(int(x) * int(y) for x, y in matches)
 
+def sum_enabled_multiplications(data: str) -> int:
+    return sum_multiplications(data) - sum_disabled_multiplications(data)
+
 def read_file(input_file_path: str) -> str:
-    return open(input_file_path).read()
+    with  open(input_file_path) as input_file:
+        return input_file.read()
 
 if __name__ == "__main__":
     file = read_file("input.txt")
     print(f"Sum of all multiplications: {sum_multiplications(file)}")
-    print(f"Sum of all enabled multiplications: {sum_multiplications(file) - sum_disabled_multiplications(file)}")
+    print(f"Sum of all enabled multiplications: {sum_enabled_multiplications(file)}")
