@@ -10,8 +10,8 @@ class Test(unittest.TestCase):
     def testPart1(self):
         self.assertEqual(2336, count_xmas(self.letters))
 
-    # def testPart2(self):
-    #     self.assertEqual(, count_x_mas(self.letters))
+    def testPart2(self):
+        self.assertEqual(1831, count_x_mas(self.letters))
 
     def testPart1Example1(self):
         test_file = read_file("test-part1-1.txt")

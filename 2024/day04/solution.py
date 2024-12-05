@@ -53,7 +53,46 @@ def count_xmas(data: List[List[str]]) -> int:
 
 
 def count_x_mas(data: List[List[str]]) -> int:
-    pass
+    """
+    Search for Pattern
+
+    M.S      M.M      S.M       S.S
+    .A.  or  .A.  or  .A.   or  .A.
+    M.S      S.S      S.M       M.M
+
+    If the board size is MxN, iterate through (M-1)x(N-1) space and map if the 3x3 surrounding matches any of the 4
+    :param data: Crossword board
+    """
+    count = 0
+    m = len(data)
+    n = len(data[0])
+    for r in range(1, m - 1):
+        for c in range(1, n - 1):
+            if data[r][c] == "A":
+                case1 = [(-1, -1, "M"), (-1, 1, "S"), (1, -1, "M"), (1, 1, "S")]
+                case2 = [(-1, -1, "M"), (-1, 1, "M"), (1, -1, "S"), (1, 1, "S")]
+                case3 = [(-1, -1, "S"), (-1, 1, "M"), (1, -1, "S"), (1, 1, "M")]
+                case4 = [(-1, -1, "S"), (-1, 1, "S"), (1, -1, "M"), (1, 1, "M")]
+                count += (match_patterns(data, r, c, case1) or
+                          match_patterns(data, r, c, case2) or
+                          match_patterns(data, r, c, case3) or
+                          match_patterns(data, r, c, case4))
+    return count
+
+
+def match_patterns(grid: List[List[str]], r: int, c: int, conditions: List[tuple[int, int, str]]) -> bool:
+    """
+    Check if given conditions match the pattern in the grid
+    :param grid: Crossword board
+    :param r: row index
+    :param c: column index
+    :param conditions: a list of tuples containing (row offset, column offset, expected value)
+    :return: True if all conditions are met, otherwise False
+    """
+    for i, j, pattern in conditions:
+        if grid[r + i][c + j] != pattern:
+            return False
+    return True
 
 
 if __name__ == "__main__":
