@@ -1,3 +1,5 @@
+import copy
+from collections import defaultdict
 from typing import List
 
 
@@ -13,50 +15,130 @@ def format_data(raw_data: str) -> List[List[str]]:
     return layout
 
 
-def num_distinct_positions(raw_input: str) -> int:
-    layout = format_data(raw_input)
-    guard_format = [">", "v", "<", "^"]
-    R = len(layout)
-    C = len(layout[0])
-    cur_r = None
-    cur_c = None
-    orientation = None
-    for r in range(R):
-        for c in range(C):
-            if layout[r][c] in guard_format:
-                orientation = guard_format.index(layout[r][c])
-                cur_r = r
-                cur_c = c
-    num = 0
+class Map:
+    def __init__(self, raw_input):
+        self.layout = format_data(raw_input)
+        self.guard_format = [">", "v", "<", "^"]
+        self.path = []
+        self.visited = defaultdict(int)
+        self.is_cycle = False
+        self.start_r, self.start_c, self.start_o = self.init_starting_position()
+
+    def init_starting_position(self):
+        cur_r, cur_c, orientation = None, None, None
+        for r in range(len(self.layout)):
+            for c in range(len(self.layout[0])):
+                if self.layout[r][c] in self.guard_format:
+                    orientation = self.guard_format.index(self.layout[r][c])
+                    cur_r = r
+                    cur_c = c
+
+        return cur_r, cur_c, orientation
+
+    def row_count(self):
+        return len(self.layout)
+
+    def column_count(self):
+        return len(self.layout[0])
+
+    def set(self, r, c, value):
+        self.layout[r][c] = value
+
+        # Check if this cell has been visited before
+        self.visited[(r, c)] += 1
+        if self.visited[(r, c)] > 4:
+            # The cell can be visited maximum of 4 different times before considered a cycle
+            # This is because path could turn to 4 different direction from the coordinate
+            self.is_cycle = True
+
+    def get(self, r, c):
+        return self.layout[r][c]
+
+    def get_starting_position(self):
+        return self.start_r, self.start_c, self.start_o
+
+
+def walk(m: Map):
+    R, C = m.row_count(), m.column_count()
+    cur_r, cur_c, orientation = m.get_starting_position()
     out_of_bound = False
-    while not out_of_bound:
-        layout[cur_r][cur_c] = "X"
+
+    while not out_of_bound and not m.is_cycle:
+        m.set(cur_r, cur_c, "X")
         next_r = cur_r
         next_c = cur_c
-        if guard_format[orientation] == ">":
+        if m.guard_format[orientation] == ">":
             next_c += 1
-        if guard_format[orientation] == "v":
+        if m.guard_format[orientation] == "v":
             next_r += 1
-        if guard_format[orientation] == "<":
+        if m.guard_format[orientation] == "<":
             next_c -= 1
-        if guard_format[orientation] == "^":
+        if m.guard_format[orientation] == "^":
             next_r -= 1
 
         if next_r < 0 or next_c < 0 or next_r >= R or next_c >= C:
             out_of_bound = True
-        elif layout[next_r][next_c] == "#":
+        elif m.get(next_r, next_c) == "#":
             orientation += 1
-            orientation %= 4
+            orientation %= len(m.guard_format)
         else:
             cur_r, cur_c = next_r, next_c
 
-    for r in range(R):
-        for c in range(C):
-            if layout[r][c] == "X":
-                num += 1
-    return num
+
+def num_guard_positions(raw_file: str) -> int:
+    m = Map(raw_file)
+    walk(m)
+    positions = 0
+    for r in range(m.row_count()):
+        for c in range(m.column_count()):
+            if m.get(r, c) == "X":
+                positions += 1
+    return positions
+
+
+def num_obstruction_positions(raw_file: str) -> int:
+    """
+    Follow the X in the map.
+    For every position in the path, try to place obstruction ahead and check if that creates a cycle.
+    Cycle happens when same path is repeated more than once.
+    This can be deduced when two cells in the grid is repeated in same sequence.
+    """
+    m = Map(raw_file)
+
+    R, C = m.row_count(), m.column_count()
+    cur_r, cur_c, orientation = m.get_starting_position()
+    out_of_bound = False
+    obstruction_pos = defaultdict()
+
+    while not out_of_bound:
+        m_clone = copy.deepcopy(m)  # Create a copy of the current map
+        next_r = cur_r
+        next_c = cur_c
+        if m.guard_format[orientation] == ">":
+            next_c += 1
+        if m.guard_format[orientation] == "v":
+            next_r += 1
+        if m.guard_format[orientation] == "<":
+            next_c -= 1
+        if m.guard_format[orientation] == "^":
+            next_r -= 1
+
+        if next_r < 0 or next_c < 0 or next_r >= R or next_c >= C:
+            out_of_bound = True
+        elif m.get(next_r, next_c) == "#":
+            orientation += 1
+            orientation %= len(m.guard_format)
+        else:
+            m_clone.set(next_r, next_c, "#")  # Set up a potential obstruction
+            walk(m_clone)  # Test the path with new obstruction
+            if m_clone.is_cycle:
+                obstruction_pos[(next_r, next_c)] = True
+            cur_r, cur_c = next_r, next_c
+
+    return len(obstruction_pos.items())
 
 
 if __name__ == "__main__":
     file = read_file("input.txt")
-    print(f"Number of distinct position of the guard: {num_distinct_positions(file)}")
+    print(f"Number of distinct position of the guard: {num_guard_positions(file)}")
+    print(f"Number of distinct position of the obstruction: {num_obstruction_positions(file)}")
