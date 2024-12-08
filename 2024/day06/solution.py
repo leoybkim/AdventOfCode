@@ -41,15 +41,13 @@ class Map:
     def column_count(self):
         return len(self.layout[0])
 
-    def set(self, r, c, value):
+    def set(self, r, c, o, value):
         self.layout[r][c] = value
 
-        # Check if this cell has been visited before
-        self.visited[(r, c)] += 1
-        if self.visited[(r, c)] > 4:
-            # The cell can be visited maximum of 4 different times before considered a cycle
-            # This is because path could turn to 4 different direction from the coordinate
+        # Check if this cell has been visited before with the same orientation more than once
+        if self.visited[(r, c, o)] > 1:
             self.is_cycle = True
+        self.visited[(r, c, o)] += 1
 
     def get(self, r, c):
         return self.layout[r][c]
@@ -64,7 +62,7 @@ def walk(m: Map):
     out_of_bound = False
 
     while not out_of_bound and not m.is_cycle:
-        m.set(cur_r, cur_c, "X")
+        m.set(cur_r, cur_c, orientation, "X")
         next_r = cur_r
         next_c = cur_c
         if m.guard_format[orientation] == ">":
@@ -108,7 +106,7 @@ def num_obstruction_positions(raw_file: str) -> int:
     R, C = m.row_count(), m.column_count()
     cur_r, cur_c, orientation = m.get_starting_position()
     out_of_bound = False
-    obstruction_pos = defaultdict()
+    obstruction_pos = set()
 
     while not out_of_bound:
         m_clone = copy.deepcopy(m)  # Create a copy of the current map
@@ -129,13 +127,13 @@ def num_obstruction_positions(raw_file: str) -> int:
             orientation += 1
             orientation %= len(m.guard_format)
         else:
-            m_clone.set(next_r, next_c, "#")  # Set up a potential obstruction
+            m_clone.set(next_r, next_c, orientation, "#")  # Set up a potential obstruction
             walk(m_clone)  # Test the path with new obstruction
             if m_clone.is_cycle:
-                obstruction_pos[(next_r, next_c)] = True
+                obstruction_pos.add((next_r, next_c))
             cur_r, cur_c = next_r, next_c
 
-    return len(obstruction_pos.items())
+    return len(obstruction_pos)
 
 
 if __name__ == "__main__":
