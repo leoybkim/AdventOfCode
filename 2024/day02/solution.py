@@ -47,5 +47,6 @@ def num_safe_reports(input_file_path: str, dampener=0) -> int:
 
 
 if __name__ == "__main__":
-    print(f"Total number of safe reports: {num_safe_reports("input.txt")}")
-    print(f"Total number of safe reports (with dampener): {num_safe_reports("input.txt", dampener=1)}")
+    file = "inputs/input.txt"
+    print(f"Total number of safe reports: {num_safe_reports(file)}")
+    print(f"Total number of safe reports (with dampener): {num_safe_reports(file, dampener=1)}")

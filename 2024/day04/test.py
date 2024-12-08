@@ -4,29 +4,25 @@ from solution import *
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.file = read_file("input.txt")
-        self.letters = format_data(self.file)
+        self.input_file = read_file("inputs/input.txt")
+        self.test_file1_1 = read_file("inputs/test1-1.txt")
+        self.test_file1_2 = read_file("inputs/test1-2.txt")
+        self.test_file2 = read_file("inputs/test2.txt")
 
     def testPart1(self):
-        self.assertEqual(2336, count_xmas(self.letters))
+        self.assertEqual(2336, count_xmas(format_data(self.input_file)))
 
     def testPart2(self):
-        self.assertEqual(1831, count_x_mas(self.letters))
+        self.assertEqual(1831, count_x_mas(format_data(self.input_file)))
 
     def testPart1Example1(self):
-        test_file = read_file("test-part1-1.txt")
-        test_data = format_data(test_file)
-        self.assertEqual(4, count_xmas(test_data))
+        self.assertEqual(4, count_xmas(format_data(self.test_file1_1)))
 
     def testPart1Example2(self):
-        test_file = read_file("test-part1-2.txt")
-        test_data = format_data(test_file)
-        self.assertEqual(18, count_xmas(test_data))
+        self.assertEqual(18, count_xmas(format_data(self.test_file1_2)))
 
     def testPart2Example1(self):
-        test_file = read_file("test-part2.txt")
-        test_data = format_data(test_file)
-        self.assertEqual(9, count_x_mas(test_data))
+        self.assertEqual(9, count_x_mas(format_data(self.test_file2)))
 
 
 if __name__ == "__main__":

@@ -64,6 +64,6 @@ def total_calibration(raw_file: str, allow_concat: bool = False) -> int:
 
 
 if __name__ == "__main__":
-    file = read_file("input.txt")
+    file = read_file("inputs/input.txt")
     print(f"Total calibration result: {total_calibration(file)}")
     print(f"Total calibration result: {total_calibration(file, allow_concat=True)}")

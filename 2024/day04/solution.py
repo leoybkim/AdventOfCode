@@ -2,7 +2,7 @@ from typing import List
 
 
 def read_file(input_file_path: str) -> str:
-    with  open(input_file_path) as input_file:
+    with open(input_file_path) as input_file:
         return input_file.read()
 
 
@@ -96,7 +96,7 @@ def match_patterns(grid: List[List[str]], r: int, c: int, conditions: List[tuple
 
 
 if __name__ == "__main__":
-    file = read_file("input.txt")
+    file = read_file("inputs/input.txt")
     letters = format_data(file)
     print(f"Number of times XMAS appear: {count_xmas(letters)}")
     print(f"Number of times X-MAS appear: {count_x_mas(letters)}")

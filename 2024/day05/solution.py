@@ -3,7 +3,7 @@ from typing import List
 
 
 def read_file(input_file_path: str) -> str:
-    with  open(input_file_path) as input_file:
+    with open(input_file_path) as input_file:
         return input_file.read()
 
 
@@ -120,7 +120,7 @@ def sum_incorrect_ordered_middle_pages_after_reordering(raw_data: str) -> int:
 
 
 if __name__ == "__main__":
-    file = read_file("input.txt")
+    file = read_file("inputs/input.txt")
     print(f"Sum of correctly-ordered updates' middle pages: {sum_correct_ordered_middle_pages(file)}")
     print(f"Sum of incorrectly-ordered updates' middle pages after reordering: "
           f"{sum_incorrect_ordered_middle_pages_after_reordering(file)}")

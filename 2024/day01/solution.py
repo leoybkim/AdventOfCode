@@ -54,5 +54,6 @@ def find_similarity_score(input_file_path: str) -> int:
 
 
 if __name__ == "__main__":
-    print(f"Total distance is: {find_total_distance("input.txt")}")
-    print(f"Total similarity score is: {find_similarity_score("input.txt")}")
+    file = "inputs/input.txt"
+    print(f"Total distance is: {find_total_distance(file)}")
+    print(f"Total similarity score is: {find_similarity_score(file)}")
