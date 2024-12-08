@@ -41,63 +41,37 @@ def total_nodes(raw_file: str, loop=False) -> int:
 
 
 def find_nodes(p1: tuple[int, int], p2: tuple[int, int], R: int, C: int, loop: bool) -> List[tuple[int, int]]:
+    def add_nodes(y: int, x: int, dy: int, dx: int, condition: callable) -> List[tuple[int, int]]:
+        _nodes = []
+        while condition(y, x):
+            y += dy
+            x += dx
+            _nodes.append((y, x))
+            if not loop:
+                break
+        return _nodes
+
     p1y, p1x = p1
     p2y, p2x = p2
-    a = (p1y - p2y) / (p1x - p2x)  # slope
+    slope = (p1y - p2y) / (p1x - p2x)
     x_diff = abs(p1x - p2x)
     y_diff = abs(p1y - p2y)
     nodes = []
 
-    l1 = True
-    l2 = True
-
-    if a >= 0:
+    if slope >= 0:
         if p1y > p2y:
-            while p1y + y_diff < R and p1x + x_diff < C and l1:
-                nodes.append((p1y + y_diff, p1x + x_diff))
-                p1y += y_diff
-                p1x += x_diff
-                l1 = loop
-            while p2y - y_diff >= 0 and p2x - x_diff >= 0 and l2:
-                nodes.append((p2y - y_diff, p2x - x_diff))
-                p2y -= y_diff
-                p2x -= x_diff
-                l2 = loop
+            nodes += add_nodes(p1y, p1x, y_diff, x_diff, lambda y, x: y + y_diff < R and x + x_diff < C)
+            nodes += add_nodes(p2y, p2x, -y_diff, -x_diff, lambda y, x: y - y_diff >= 0 and x - x_diff >= 0)
         else:
-            while p1y - y_diff >= 0 and p1x - x_diff >= 0 and l1:
-                nodes.append((p1y - y_diff, p1x - x_diff))
-                p1y -= y_diff
-                p1x -= x_diff
-                l1 = loop
-            while p2y + y_diff < R and p2x + x_diff < C and l2:
-                nodes.append((p2y + y_diff, p2x + x_diff))
-                p2y += y_diff
-                p2x += x_diff
-                l2 = loop
+            nodes += add_nodes(p1y, p1x, -y_diff, -x_diff, lambda y, x: y - y_diff >= 0 and x - x_diff >= 0)
+            nodes += add_nodes(p2y, p2x, y_diff, x_diff, lambda y, x: y + y_diff < R and x + x_diff < C)
     else:
         if p1y > p2y:
-            while p1y + y_diff < R and p1x - x_diff >= 0 and l1:
-                nodes.append((p1y + y_diff, p1x - x_diff))
-                p1y += y_diff
-                p1x -= x_diff
-                l1 = loop
-            while p2y - y_diff >= 0 and p2x + x_diff < C and l2:
-                nodes.append((p2y - y_diff, p2x + x_diff))
-                p2y -= y_diff
-                p2x += x_diff
-                l2 = loop
+            nodes += add_nodes(p1y, p1x, y_diff, -x_diff, lambda y, x: y + y_diff < R and x - x_diff >= 0)
+            nodes += add_nodes(p2y, p2x, -y_diff, x_diff, lambda y, x: y - y_diff >= 0 and x + x_diff < C)
         else:
-            while p1y - y_diff >= 0 and p1x + x_diff < C and l1:
-                nodes.append((p1y - y_diff, p1x + x_diff))
-                p1y -= y_diff
-                p1x += x_diff
-                l1 = loop
-            while p2y + y_diff < R and p2x - x_diff >= 0 and l2:
-                nodes.append((p2y + y_diff, p2x - x_diff))
-                p2y += y_diff
-                p2x -= x_diff
-                l2 = loop
-
+            nodes += add_nodes(p1y, p1x, -y_diff, x_diff, lambda y, x: y - y_diff >= 0 and x + x_diff < C)
+            nodes += add_nodes(p2y, p2x, y_diff, -x_diff, lambda y, x: y + y_diff < R and x - x_diff >= 0)
     return nodes
 
 
