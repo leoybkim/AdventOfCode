@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
         self.assertEqual(6337367222422, checksum(self.input_file))
 
     def testPart2(self):
-        self.assertEqual(6361380647183, checksum(self.input_file, whole=True))  # 6361381088795
+        self.assertEqual(6361380647183, checksum(self.input_file, whole=True))
 
     def testPart1Example1(self):
         translated = translate(self.test_file1)
