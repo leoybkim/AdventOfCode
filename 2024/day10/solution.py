@@ -51,6 +51,6 @@ def sum_trailhead_scores(raw_file: str, ratings=False) -> int:
 
 
 if __name__ == "__main__":
-    file = read_file("inputs/test6.txt")
+    file = read_file("inputs/input.txt")
     print(f"Sum of scores of al trailheads: {sum_trailhead_scores(file)}")
     print(f"Sum of ratings of al trailheads: {sum_trailhead_scores(file, ratings=True)}")
