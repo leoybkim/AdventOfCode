@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List
 
 
@@ -13,32 +14,57 @@ def format_data(raw_data: str) -> List[List[str]]:
     return grid
 
 
-def find_perimeter(r, c, grid):
-    perimeter = 0
+def find_perimeter(r: int, c: int, grid: List[List[str]], perimeter: dict):
     for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
         nr, nc = r + dr, c + dc
         if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
             if grid[nr][nc] != grid[r][c]:
-                perimeter += 1
+                perimeter[dr, dc].append((r, c))
         else:
-            perimeter += 1
-
-    return perimeter
+            perimeter[dr, dc].append((r, c))
 
 
-def dfs(r, c, grid, plant, group, visited):
+def dfs(r: int, c: int, grid: List[List[str]], plant: str,
+        area: List[tuple], perimeter: dict, visited: List[List[bool]]):
     if not visited[r][c]:
         visited[r][c] = True
-        group.append((r, c))
-        perimeter = find_perimeter(r, c, grid)
+        area.append((r, c))
+        find_perimeter(r, c, grid, perimeter)
 
         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nr, nc = r + dr, c + dc
             if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and not visited[nr][nc] and grid[nr][nc] == plant:
-                perimeter += dfs(nr, nc, grid, plant, group, visited)
-        return perimeter
-    else:
-        return 0
+                dfs(nr, nc, grid, plant, area, perimeter, visited)
+
+
+def count_sides(perimeter: dict) -> int:
+    sides = 0
+    for (nr, nc) in perimeter:
+        cells = sorted(perimeter[(nr, nc)])
+        if nc == 0:
+            # Top or bottom side checks
+            sr = None
+            sc = None
+            for cell in cells:
+                if sr != cell[0]:
+                    sr = cell[0]
+                    sides += 1  # different row
+                elif sc is not None and abs(cell[1] - sc) > 1:
+                    sides += 1  # gaps
+                sc = cell[1]
+        cells = sorted(perimeter[(nr, nc)], key=lambda point: (point[1], point[0]))
+        if nr == 0:
+            # Left or right side checks
+            sr = None
+            sc = None
+            for cell in cells:
+                if sc != cell[1]:
+                    sc = cell[1]
+                    sides += 1  # different column
+                elif sr is not None and abs(cell[0] - sr) > 1:
+                    sides += 1  # gaps
+                sr = cell[0]
+    return sides
 
 
 def total_price(raw_file: str, discount=False) -> int:
@@ -48,17 +74,18 @@ def total_price(raw_file: str, discount=False) -> int:
 
     visited = [[False for _ in range(C)] for _ in range(R)]
     price = 0
-
     for r in range(R):
         for c in range(C):
             if not visited[r][c]:
-                group = []
+                area = []
+                perimeter = defaultdict(list)
                 plant = grid[r][c]
-                if not discount:
-                    perimeter = dfs(r, c, grid, plant, group, visited)
-                    price += len(group) * perimeter
+                dfs(r, c, grid, plant, area, perimeter, visited)
+                if discount:
+                    price += len(area) * count_sides(perimeter)
                 else:
-                    pass
+                    price += len(area) * sum(len(side) for side in perimeter.values())
+
     return price
 
 

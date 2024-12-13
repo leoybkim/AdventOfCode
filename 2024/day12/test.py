@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1344578, total_price(self.input_file))
 
     def testPart2(self):
-        self.assertEqual(0, total_price(self.input_file))
+        self.assertEqual(814302, total_price(self.input_file, discount=True))
 
     def testPart1Example1(self):
         self.assertEqual(140, total_price(self.test_file1))
@@ -27,19 +27,20 @@ class Test(unittest.TestCase):
         self.assertEqual(1930, total_price(self.test_file3))
 
     def testPart2Example1(self):
-        self.assertEqual(80, total_price(self.test_file1))
+        self.assertEqual(80, total_price(self.test_file1, discount=True))
 
     def testPart2Example2(self):
-        self.assertEqual(436, total_price(self.test_file2))
+        self.assertEqual(436, total_price(self.test_file2, discount=True))
 
     def testPart2Example3(self):
-        self.assertEqual(1206, total_price(self.test_file3))
+        self.assertEqual(1206, total_price(self.test_file3, discount=True))
 
     def testPart2Example4(self):
-        self.assertEqual(236, total_price(self.test_file4))
+        self.assertEqual(236, total_price(self.test_file4, discount=True))
 
     def testPart2Example5(self):
-        self.assertEqual(368, total_price(self.test_file5))
+        self.assertEqual(368, total_price(self.test_file5, discount=True))
+
 
 if __name__ == "__main__":
     unittest.main()
