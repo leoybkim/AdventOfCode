@@ -31,15 +31,10 @@ def safety_factor(raw_input: str, W=101, H=103, seconds=100) -> int:
     for robot in robots:
         robot["position"] = ((robot["position"][0] + seconds * robot["velocity"][0]) % W,
                              (robot["position"][1] + seconds * robot["velocity"][1]) % H)
-        if 0 <= robot["position"][0] < m_W and 0 <= robot["position"][1] < m_H:
-            q1 += 1
-        elif m_W < robot["position"][0] < W and 0 <= robot["position"][1] < m_H:
-            q2 += 1
-        elif 0 <= robot["position"][0] < m_W and m_H < robot["position"][1] < H:
-            q3 += 1
-        elif m_W < robot["position"][0] < W and m_H < robot["position"][1] < H:
-            q4 += 1
-
+        q1 += 0 <= robot["position"][0] < m_W and 0 <= robot["position"][1] < m_H
+        q2 += m_W < robot["position"][0] < W and 0 <= robot["position"][1] < m_H
+        q3 += 0 <= robot["position"][0] < m_W and m_H < robot["position"][1] < H
+        q4 += m_W < robot["position"][0] < W and m_H < robot["position"][1] < H
     return q1 * q2 * q3 * q4
 
 
@@ -54,7 +49,6 @@ def find_tree(raw_input: str, W=101, H=103, seconds=100) -> int:
             grid[robot["position"][1]][robot["position"][0]] = "@"
 
         # Print the grid
-
         if any("@@@@@@@@@@@@@@@@@@" in "".join(row) for row in grid):
             for row in range(H):
                 print("".join(grid[row]))
