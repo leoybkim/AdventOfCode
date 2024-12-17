@@ -89,21 +89,25 @@ def recursive_push(grid: List[List[str]], row: int, boxes: tuple[int, int], dr: 
                 break
 
     if prev is None:
+        # If first iteration, replace the box position with robot and a clear space next to it
         grid[row][s:e + 1] = ["@", "."] if edge == "[" else [".", "@"]
         if edge == "[":
             grid[row - dr][s] = "."
         else:
             grid[row - dr][e] = "."
     else:
+        # For all iteration > 1, replace the current rows of boxes with the previous rows of box
+        # Calculate where the free space should be placed, if any, depending on the positional difference from two rows
         ps, pe = prev
-        if ps <= s and pe <= e:
-            grid[row][ps:pe + 1] = prev_row[ps:pe + 1]
-        else:
-            grid[row][s:e + 1] = ["."] * (abs(ps - s) - 1) + prev_row[s:e + 1] + ["."] * (abs(e - pe) - 1)
+        grid[row][min(ps, s):max(pe, e) + 1] = (["."] * ((ps - s) if ps > s else 0) +
+                                                prev_row[ps:pe + 1] +
+                                                ["."] * ((e - pe) if pe < e else 0))
     if ns is None and ne is None:
+        # If there are no more boxes ahead of the current ones, do the final push and exit recursion
         grid[row + dr][s:e + 1] = temp_prev_row[s:e + 1]
         return True
     else:
+        # If there are more boxes to push, continue recursion
         return recursive_push(grid, row + dr, (ns, ne), dr, (s, e), temp_prev_row, edge)
 
 
@@ -131,7 +135,6 @@ def push_boxes(grid: List[List[str]], robot: tuple[int, int], d: tuple[int, int]
             if grid[r][rc] == ".":
                 # Shift all the boxes in the column one cell vertically in the direction
                 if large:
-                    # Don't really like this code design... How do I revert if I want to edit the original map?
                     # Create a copy of the current map and attempt to push boxes recursively for each row
                     # If all rows of boxes can be pushed, reassigned the edited map to the current map
                     # Otherwise, toss the temp map
@@ -199,10 +202,6 @@ def move_robot(grid: List[List[str]], moves: List[str], large: bool):
             else:
                 grid[rr][rc], grid[nr][nc] = ".", "@"
                 rr, rc = nr, nc
-        print(f"{i}th Move: {move}")
-        for line in grid:
-            print(line)
-        print("======================================")
 
 
 def sum_gps_coordinates(raw_input: str, large=False) -> int:
@@ -225,6 +224,6 @@ def sum_gps_coordinates(raw_input: str, large=False) -> int:
 
 
 if __name__ == "__main__":
-    file = read_file("inputs/test2.txt")
+    file = read_file("inputs/input.txt")
     print(f"Sum of all boxes' GPS coordinates: {sum_gps_coordinates(file)}")
     print(f"Sum of all boxes' GPS coordinates in scaled-up warehouse: {sum_gps_coordinates(file, large=True)}")

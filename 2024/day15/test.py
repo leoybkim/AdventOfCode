@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1415498, sum_gps_coordinates(self.input_file))
 
     def testPart2(self):
-        pass
+        self.assertEqual(1432898, sum_gps_coordinates(self.input_file, large=True))
 
     def testPart1Example1(self):
         self.assertEqual(10092, sum_gps_coordinates(self.test_file1))
