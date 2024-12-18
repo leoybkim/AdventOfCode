@@ -183,7 +183,7 @@ def move_robot(grid: List[List[str]], moves: List[str], large: bool):
         "v": (1, 0)
     }
     rr, rc = robot_coordinate(grid)
-    for i, move in enumerate(moves):
+    for move in moves:
         nr, nc = rr + coord[move][0], rc + coord[move][1]
         if 0 < nr < len(grid) - 1 and 0 < nc < len(grid[0]) - 1:  # Borders are surrounded by walls of 1 cell depth
             if grid[nr][nc] == "#":
