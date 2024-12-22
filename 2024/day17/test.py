@@ -7,12 +7,13 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.input_file = read_file("inputs/input.txt")
         self.test_file1 = read_file("inputs/test1.txt")
+        self.test_file2 = read_file("inputs/test2.txt")
 
     def testPart1(self):
         self.assertEqual("7,0,3,1,2,6,3,7,1", program_output(self.input_file))
 
     def testPart2(self):
-        pass
+        self.assertEqual(109020013201563, program_output(self.input_file, quine=True))
 
     def testPart1Example1(self):
         self.assertEqual("4,6,3,5,6,3,5,2,1,0", program_output(self.test_file1))
@@ -28,13 +29,13 @@ class Test(unittest.TestCase):
         register = {"A": 10, "B": 0, "C": 0}
         program = [5, 0, 5, 1, 5, 4]
         comp = Computer(register, program)
-        self.assertEqual("0,1,2", comp.compute())
+        self.assertEqual([0, 1, 2], comp.compute())
 
     def testPart1Example4(self):
         register = {"A": 2024, "B": 0, "C": 0}
         program = [0, 1, 5, 4, 3, 0]
         comp = Computer(register, program)
-        self.assertEqual("4,2,5,6,7,7,7,7,3,1,0", comp.compute())
+        self.assertEqual([4, 2, 5, 6, 7, 7, 7, 7, 3, 1, 0], comp.compute())
         self.assertEqual(0, comp.registers["A"])
 
     def testPart1Example5(self):
@@ -52,7 +53,7 @@ class Test(unittest.TestCase):
         self.assertEqual(44354, comp.registers["B"])
 
     def testPart2Example1(self):
-        pass
+        self.assertEqual(117440, program_output(self.test_file2, quine=True))
 
 
 if __name__ == "__main__":
