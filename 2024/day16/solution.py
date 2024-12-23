@@ -50,7 +50,7 @@ def dijkstra(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]
 
         for i, (dr, dc) in enumerate(directions):
             nr, nc = cur_r + dr, cur_c + dc
-            if in_bound(nr, nc) and (not visited[nr][nc][i] and maze[nr][nc] == "." or maze[nr][nc] == "E"):
+            if in_bound(nr, nc) and not visited[nr][nc][i] and (maze[nr][nc] == "." or maze[nr][nc] == "E"):
                 new_cost = cur_cost + (1 if cur_dir == (dr, dc) else 1001)
                 if new_cost < costs[nr][nc][i]:
                     costs[nr][nc][i] = new_cost
