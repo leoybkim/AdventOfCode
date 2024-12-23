@@ -20,7 +20,7 @@ def generate_maze(R: int, C: int, corrupted: List[tuple]) -> List[List[str]]:
     @param R: Number of rows
     @param C: Number of columns
     @param corrupted: List of corrupted cells
-    @return Generated maze matrix
+    @return: Generated maze matrix
     """
     maze = [["." for _ in range(C)] for _ in range(R)]
     for r, c in corrupted:
