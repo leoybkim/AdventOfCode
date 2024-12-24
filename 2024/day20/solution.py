@@ -14,36 +14,7 @@ def format_data(raw_data: str) -> List[List[str]]:
     return maze
 
 
-def in_bound(row: int, column: int, R: int, C: int) -> bool:
-    return 0 <= row < R and 0 <= column < C
-
-
-DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # down, up, left, right
-
-
-def find_cheat_cells(maze: List[List[str]]) -> List[tuple]:
-    """
-    Find cells in the maze that are worth exploring for cheats.
-    Wall cells that are touching at least 2 walkable paths should be explored.
-    @param maze: Init maze
-    @return: Cheat cell coordinates
-    """
-    cells = []
-    R, C = len(maze), len(maze[0])
-    for r in range(len(maze)):
-        for c in range(len(maze[0])):
-            if maze[r][c] == "#":
-                path_count = 0
-                for dr, dc in DIRECTIONS:
-                    nr, nc = r + dr, c + dc
-                    if in_bound(nr, nc, R, C) and (maze[nr][nc] in [".", "S", "E"]):
-                        path_count += 1
-                if path_count >= 2:
-                    cells.append((r, c))
-    return cells
-
-
-def bst(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> int | None:
+def bst(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> tuple[int, List[tuple[int, int]]]:
     """
     BST maze solver
     @param maze: Map of the maze
@@ -51,34 +22,36 @@ def bst(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> 
     @param goal: Coordinate of the destination cell
     @return: Return the minimum number of steps needed to reach the exit
     """
-    R, C = len(maze), len(maze[0])
+    DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # down, up, left, right
     visited = [[False for _ in range(len(maze[0]))] for _ in range(len(maze))]
     costs = [[float("inf") for _ in range(len(maze[0]))] for _ in range(len(maze))]
     init_r, init_c = init
-    queue = deque([(0, init_r, init_c)])  # (cost, row, column)
+    queue = deque([(0, init_r, init_c, [init])])  # (cost, row, column, path)
     costs[init_r][init_c] = 0
+
+    def in_bound(row: int, column: int) -> bool:
+        return 0 <= row < len(maze) and 0 <= column < len(maze[0])
 
     while queue:
         # FIFO
-        cur_cost, cur_r, cur_c = queue.popleft()
+        cur_cost, cur_r, cur_c, cur_path = queue.popleft()
 
         # Maze is solved; exit
         if (cur_r, cur_c) == goal:
-            return cur_cost
+            return cur_cost, cur_path
 
         visited[cur_r][cur_c] = True
 
         for i, (dr, dc) in enumerate(DIRECTIONS):
             nr, nc = cur_r + dr, cur_c + dc
-            if in_bound(nr, nc, R, C) and not visited[nr][nc] and (maze[nr][nc] == "." or maze[nr][nc] == "E"):
+            if in_bound(nr, nc) and not visited[nr][nc] and (maze[nr][nc] == "." or maze[nr][nc] == "E"):
                 new_cost = cur_cost + 1
                 if new_cost < costs[nr][nc]:
                     costs[nr][nc] = new_cost
-                    queue.append((new_cost, nr, nc))
-    return None
+                    queue.append((new_cost, nr, nc, cur_path + [(nr, nc)]))
 
 
-def count_cheats(raw_file: str, time: int) -> int:
+def count_cheats(raw_file: str, saved_time: int, cheat_time=2) -> int:
     maze = format_data(raw_file)
     start = end = None
     for r in range(len(maze)):
@@ -88,19 +61,24 @@ def count_cheats(raw_file: str, time: int) -> int:
             if maze[r][c] == "E":
                 end = (r, c)
 
-    best_cost = bst(maze, start, end)
-    cheat_cells = find_cheat_cells(maze)
-
+    best_cost, best_path = bst(maze, start, end)
     count = 0
-    for cell in cheat_cells:
-        maze[cell[0]][cell[1]] = "."
-        cheat_cost = bst(maze, start, end)
-        maze[cell[0]][cell[1]] = "#"
-        count += best_cost - cheat_cost >= time
+    path_length = len(best_path)
+    # For any two points on the best path, check if they can be shortcutted through cheating
+    for i in range(path_length):
+        for j in range(i):
+            c1, c2 = best_path[i], best_path[j]
+            original_dist = i - j  # Shortest distance between the 2 cells on the proper path on maze
+            manhattan_dist = abs(c1[0] - c2[0]) + abs(c1[1] - c2[1])  # Shortest manhattan distance between the 2 cells
+            # Check if the two points can be met at a shorter distance with the limit of cheat time
+            if manhattan_dist <= cheat_time:
+                # Check if the new path is able to save more than desired amount of time
+                count += original_dist - manhattan_dist >= saved_time
 
     return count
 
 
 if __name__ == "__main__":
     file = read_file("inputs/input.txt")
-    print(f"Number of cheats that will save 100 picoseconds: {count_cheats(file, time=100)}")
+    print(f"Number of cheats that saves 100 ps (2 ps cheat time): {count_cheats(file, saved_time=100)}")
+    print(f"Number of cheats that saves 100 ps (20 ps cheat time): {count_cheats(file, saved_time=100, cheat_time=20)}")
