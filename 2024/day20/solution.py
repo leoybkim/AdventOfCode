@@ -14,9 +14,9 @@ def format_data(raw_data: str) -> List[List[str]]:
     return maze
 
 
-def bst(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> tuple[int, List[tuple[int, int]]]:
+def bfs(maze: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> tuple[int, List[tuple[int, int]]]:
     """
-    BST maze solver
+    BFS maze solver
     @param maze: Map of the maze
     @param init: Coordinate of the starting cell
     @param goal: Coordinate of the destination cell
@@ -61,7 +61,7 @@ def count_cheats(raw_file: str, saved_time: int, cheat_time=2) -> int:
             if maze[r][c] == "E":
                 end = (r, c)
 
-    best_cost, best_path = bst(maze, start, end)
+    best_cost, best_path = bfs(maze, start, end)
     count = 0
     path_length = len(best_path)
     # For any two points on the best path, check if they can be shortcutted through cheating

@@ -28,9 +28,9 @@ def generate_maze(R: int, C: int, corrupted: List[tuple]) -> List[List[str]]:
     return maze
 
 
-def bst(maze: List[List[str]]) -> int | None:
+def bfs(maze: List[List[str]]) -> int | None:
     """
-    Simple BST maze solver where init is (0,0) and goal is (R-1, C-1)
+    Simple BFS maze solver where init is (0,0) and goal is (R-1, C-1)
     @param maze: Map of the maze
     @return: Return the minimum number of steps needed to reach the exit
     """
@@ -69,14 +69,14 @@ def solve_maze(raw_file: str, R=71, C=71, I=1024, most_corrupted=False) -> int |
     if most_corrupted:
         i = len(corrupted)
         maze = generate_maze(R, C, corrupted[:i])
-        while bst(maze) is None:
+        while bfs(maze) is None:
             i -= 1
             maze = generate_maze(R, C, corrupted[:i])
 
         last_corrupted = corrupted[i]
         return tuple(reversed(last_corrupted))
     else:
-        return bst(generate_maze(R, C, corrupted[:I]))
+        return bfs(generate_maze(R, C, corrupted[:I]))
 
 
 if __name__ == "__main__":
