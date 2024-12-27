@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
         self.assertEqual(36902370467952, output(self.input_file))
 
     def testPart2(self):
-        pass
+        self.assertEqual("cvp,mkk,qbw,wcb,wjb,z10,z14,z34", output(self.input_file, adder=True))
 
     def testPart1Example1(self):
         self.assertEqual(4, output(self.test_file1))
