@@ -25,13 +25,22 @@ def format_data(raw_data: str) -> tuple[dict, dict]:
     return wires, ops
 
 
-def full_adder(n: int, wires: dict) -> int | None:
+def full_adder(n: int, wires: dict, ops: dict) -> list | None:
     """
     Full adder operation
           sum = X XOR Y XOR carry_in
     carry_out = (X AND Y) OR (carry_in AND (X XOR Y))
+
+    Performs addition of binary number and verifies if operation logic is valid.
+    @param n: Length of the binary number being operated
+    @param wires: Wire values
+    @param ops: Operations
+    @return: Return pair of wires that must be swapped if operation is invalid
     """
     c_in = None
+    c_in_str = None
+    c_out_str = None
+
     for i in range(n):
         n_str = str(i).zfill(2)
         x_str = "x" + n_str
@@ -41,6 +50,7 @@ def full_adder(n: int, wires: dict) -> int | None:
         y = wires[y_str] if y_str in wires else 0
         z = wires[z_str]
 
+        # Bit calculations
         s = x ^ y
         tmp = x ^ y
         if c_in is not None:
@@ -48,12 +58,76 @@ def full_adder(n: int, wires: dict) -> int | None:
             tmp &= c_in
         c_out = (x & y) | tmp
 
+        # Find corresponding operations
+        if c_in is None:
+            """
+            Half adder: 2 operation steps
+            1) X XOR Y   --> Sum
+            2) X AND Y   --> Carry
+            """
+            for k, v in ops.items():
+                if set(v["eq"][0:3]) == {x_str, "AND", y_str}:
+                    c_out_str = k
+        else:
+            """
+            Full adder: 5 operation steps
+            After analyzing the full adder operation, each full adder goes through the following steps
+            0) xN   XOR   yN   ->  A                 xN XOR yN
+            1)  A   XOR  c_in  -> zN    --> Sum      xN XOR yN XOR carry_in
+            2) xN   AND   yN   ->  C                 xN AND yN
+            3)  A   AND  c_in  ->  D                 carry_in AND (xN XOR yN)
+            4)  D    OR    C   ->  E    --> Carry   (carry_in AND (xN XOR yN)) or (xN OR yN)
+
+            There are 5 choose 2 (nCr where n=5, r =2) combinations of error pairs, which equals to total 10 cases.
+            """
+            A = None
+            eq = [None] * 5
+            for k, v in ops.items():
+                if c_in_str in v["eq"][0:3] and v["eq"][1] == "XOR":
+                    if k == z_str:
+                        # Operation 1) is valid if key is zN
+                        A = v["eq"][0] if v["eq"][0] != c_in_str else v["eq"][2]
+                        eq[1] = v
+                    else:
+                        # It is trivial that 1) must be swapped with an operation that holds zN as key
+                        return [k, z_str]  # Accounts for 4 cases: 1) and [0), 2), 3), or 4)]
+                if c_in_str in v["eq"][0:3] and v["eq"][1] == "AND":
+                    eq[3] = v  # Validity of 3) is uncertain at this point
+
+            for k, v in ops.items():
+                if set(v["eq"][0:3]) == {x_str, "XOR", y_str}:
+                    if k == A:
+                        # Operation 0) is valid if key is A (it is guaranteed to have found A by this stage)
+                        eq[0] = v
+                    else:
+                        # It is trivial that 0) must be swapped with an operation that holds A as key
+                        return [k, A]  # Accounts for 3 cases: 0) and [2), 3) or 4)]
+                if set(v["eq"][0:3]) == {x_str, "AND", y_str}:
+                    eq[2] = v  # Validity of 2) is uncertain at this point
+
+            for k, v in ops.items():
+                if set(v["eq"][0:3]) == {eq[2]["eq"][3], "OR", eq[3]["eq"][3]}:
+                    # Operation 4) is valid if C and D is in the equation (by this stage)
+                    eq[4] = v
+                    c_out_str = k  # E; by this stage all 5 operations are valid
+                elif eq[2]["eq"][3] in set(v["eq"][0:3]) and v["eq"][1] == "OR":
+                    # Operation 2) is valid and Operation 3) is invalid
+                    return [k, eq[3]["eq"][3]]  # Need to swap 3) and 4)
+                elif eq[3]["eq"][3] in set(v["eq"][0:3]) and v["eq"][1] == "OR":
+                    # Operation 2) is invalid and Operation 3) is valid
+                    return [k, eq[2]["eq"][3]]  # Need to swap 2) and 4)
+
+            # Final case; check if 2) and 3) needs to be swapped
+            if eq[3]["value"] == (x & y) and eq[3]["value"] != ((x ^ y) & c_in):
+                return [eq[2]["eq"][3], eq[3]["eq"][3]]
+
         if z != s:
-            return i  # Error in expected bit value
+            # Error in expected bit value
+            raise ValueError(f"There was an error in the calculation at bit position: {i}")
         else:
             if i < n - 1:
                 c_in = c_out  # Next carry
-    return None
+                c_in_str = c_out_str
 
 
 def calculate(operand1: int, operator: str, operand2: int) -> int:
@@ -66,105 +140,36 @@ def calculate(operand1: int, operator: str, operand2: int) -> int:
             return operand1 ^ operand2
 
 
-def update_wires(wires: dict, ops: dict, swapped):
-    wires[swapped[0]], wires[swapped[1]] = wires[swapped[1]], wires[swapped[0]]
-
-    has_change = True
-    while has_change:
-        for k, v in ops.items():
-            has_change = False
-            if swapped[0] == v["eq"][0] or swapped[0] == v["eq"][2]:
-                new_val0 = calculate(wires[v["eq"][0]], v["eq"][1], wires[v["eq"][2]])
-                if v["value"] != new_val0:
-                    has_change = True
-                    v["value"] = new_val0
-                    wires[k] = v["value"]
-                    swapped[0] = k
-            if swapped[1] == v["eq"][0] or swapped[1] == v["eq"][2]:
-                new_val1 = calculate(wires[v["eq"][0]], v["eq"][1], wires[v["eq"][2]])
-                if v["value"] != new_val1:
-                    has_change = True
-                    v["value"] = new_val1
-                    wires[k] = v["value"]
-                    swapped[1] = k
-    # for k, v in ops.items():
-    #     if v["eq"][0] in wires and v["eq"][2] in wires:
-    #         v["value"] = calculate(wires[v["eq"][0]], v["eq"][1], wires[v["eq"][2]])
-    #         wires[k] = v["value"]
-
-
-
-def swap_operations(i: int, ops: dict) -> list:
+def cascade_update(key: str, wires: dict, ops: dict):
     """
-    After analyzing the full adder operation, each full adder goes through the following steps
-    1) xN   XOR   yN   ->  A                 xN XOR yN
-    2)  A   XOR  c_in  -> zN    --> Sum      xN XOR yN XOR carry_in
-    3) xN   AND   yN   ->  C                 xN AND yN
-    4)  A   AND  c_in  ->  D                 carry_in AND (xN XOR yN)
-    5)  D    OR    C   ->  E    --> Carry   (carry_in AND (xN XOR yN)) or (xN OR yN)
-
-    There are 5 choose 2 (nCr where n=5, r =2) combinations of error pairs, which equals to total 10 cases.
-    However, switching 3) and 4) doesn't change the overall results, so this case can be ignored.
-    So only 9 final cases needs to be considered.
+    Upon swapping of the results, more equations may need to the updated if that swapped results is an input to another operation.
+    @param key: Updated wire
+    @param wires: Wire values
+    @param ops: Operations
     """
-
-    def swap(k1, k2) -> list:
-        ops[k1]["eq"][3], ops[k2]["eq"][3] = ops[k2]["eq"][3], ops[k1]["eq"][3]
-        ops[k1], ops[k2] = ops[k2], ops[k1]
-        return [k1, k2]
-
-    operations = [None] * 5  # Store operations and an indicator for error in the resulting wire
-    n_str = str(i).zfill(2)
-
     for k, v in ops.items():
-        tmp = set(v["eq"][0:3])
-        if tmp == {"x" + n_str, "XOR", "y" + n_str}:
-            operations[0] = v  # 1) xN XOR yN -> A
-            if v["eq"][3][0] == "z":
-                for _k, _v in ops.items():
-                    if _k == "z" + n_str:
-                        return swap(k, _k)  # Swap 1) and 2)
+        if key == v["eq"][0] or key == v["eq"][2]:
+            new_val = calculate(wires[v["eq"][0]], v["eq"][1], wires[v["eq"][2]])
+            if v["eq"][3] != new_val:
+                ops[k]["value"] = new_val
+                wires[k] = new_val
+                cascade_update(k, wires, ops)  # Recursively update the output affected by the input change
 
-        if tmp == {"x" + n_str, "AND", "y" + n_str}:
-            operations[2] = v  # 3) xN AND yN -> C
-            if v["eq"][3][0] == "z":
-                for _k, _v in ops.items():
-                    if _k == "z" + n_str:
-                        return swap(k, _k)  # Swap 2) and 3)
 
-    # Found operation 1) and 3), but results are not guaranteed to be correct
-    if ops["z" + n_str]["eq"][1] == "OR":
-        operations[4] = ops["z" + n_str]  # 5) D OR C -> E
-        A = operations[0]["eq"][3]  # Need to swap 2) and 5), so can assume 1) is correct
-        for _k, _v in ops.items():
-            tmp = set(_v["eq"][0:3])
-            if A in tmp and "XOR" in tmp:
-                return swap("z" + n_str, _k)  # Swap 2) and 5)
+def swap_operations(k1: str, k2: str, wires: dict, ops: dict):
+    """
+    Swap the results from the two operations and cascade the update.
+    @param k1: Wire that stores the result of the first operation
+    @param k2: Wire that stores the result of the second operation
+    @param wires: Wire values
+    @param ops: Operations
+    """
+    wires[k1], wires[k2] = wires[k2], wires[k1]
+    ops[k1]["eq"][3], ops[k2]["eq"][3] = ops[k2]["eq"][3], ops[k1]["eq"][3]
+    ops[k1], ops[k2] = ops[k2], ops[k1]
+    cascade_update(k1, wires, ops)
+    cascade_update(k2, wires, ops)
 
-    if ops["z" + n_str]["eq"][1] == "AND":
-        operations[3] = ops["z" + n_str]  # 4) A AND c_in -> D
-        for _k, _v in ops.items():
-            tmp = set(_v["eq"][0:3])
-            if tmp == {ops["z" + n_str]["eq"][0], "XOR", ops["z" + n_str]["eq"][2]}:
-                return swap("z" + n_str, _k)  # Swap 2) and 4)
-
-    if ops["z" + n_str]["eq"][1] == "XOR" and ops["z" + n_str]["eq"][0][0] not in ["x", "y"]:
-        operations[1] = ops["z" + n_str]  # 2) A XOR c_in -> zN
-        if operations[0]["eq"][3] not in ops["z" + n_str]["eq"]: # 1) is incorrect and must be swapped
-            for _k, _v in ops.items():
-                if _v["eq"][1] == "OR" and operations[0]["eq"][3] in _v["eq"]:
-                    return swap(operations[0]["eq"][3], operations[2]["eq"][3])  # Swap 1) and 3)
-            return swap(operations[0]["eq"][3], operations[3]["eq"][3])  # Swap 1) and 4)
-
-    # if operations[4]["eq"][3] in operations[1]["eq"] and operations[0]["eq"][3] not in operations[1]["eq"]:
-    #     return swap(operations[0]["eq"][3], operations[4]["eq"][3])  # Swap 1) and 5)
-    #
-    # if operations[3]["eq"][3] not in operations[4]["eq"] and operations[4]["eq"][3] in operations[4]["eq"]:
-    #     return swap(operations[3]["eq"][3], operations[4]["eq"][3])  # Swap 4) and 5)
-    #
-    # if operations[2]["eq"][3] not in operations[4]["eq"] and operations[4]["eq"][3] not in operations[4]["eq"]:
-    #     return swap(operations[2]["eq"][3], operations[4]["eq"][3])  # Swap 3) and 5)
-    #
 
 def output(raw_input: str, adder=False) -> int | str:
     wires, ops = format_data(raw_input)
@@ -184,11 +189,12 @@ def output(raw_input: str, adder=False) -> int | str:
 
     if adder:
         swapped_wires = []
-        error_index = full_adder(n, wires)
-        while error_index is not None or len(swapped_wires) >= 8:
-            error_index = full_adder(n, wires)
-            swapped = swap_operations(error_index, ops)
-            update_wires(wires, ops, swapped)
+        # Find the 4 swapped pairs
+        for _ in range(4):
+            k1, k2 = full_adder(n, wires, ops)
+            swapped_wires += [k1, k2]
+            swap_operations(k1, k2, wires, ops)
+
         swapped_wires.sort()
         return ",".join(swapped_wires)
     else:
@@ -197,6 +203,6 @@ def output(raw_input: str, adder=False) -> int | str:
 
 
 if __name__ == "__main__":
-    file = read_file("inputs/omg3.txt")
+    file = read_file("inputs/input.txt")
     print(f"Decimal number output on wires starting with z: {output(file)}")
-    # print(f"Output of the sorted wires name: {output(file, adder=True)}")
+    print(f"Output of the sorted wires name: {output(file, adder=True)}")
