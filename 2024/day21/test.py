@@ -9,16 +9,13 @@ class Test(unittest.TestCase):
         self.test_file = read_file("inputs/test.txt")
 
     def testPart1(self):
-        self.assertEqual(162740, total_complexities(self.input_file))
+        self.assertEqual(162740, total_complexities(self.input_file, count=2))
 
     def testPart2(self):
         pass
 
     def testPart1Example1(self):
-        self.assertEqual(126384, total_complexities(self.test_file))
-
-    def testPart2Example1(self):
-        pass
+        self.assertEqual(126384, total_complexities(self.test_file, count=2))
 
 
 if __name__ == "__main__":

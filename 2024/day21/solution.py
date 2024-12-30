@@ -66,14 +66,46 @@ def find_coord(grid: List[List[str]], c: str) -> tuple[int, int]:
                 return i, j
 
 
-def shortest_sequence(code: str) -> int:
-    numeric_keypad = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"], [None, "0", "A"]]
+def directional_keypad_paths(parent_paths):
     directional_keypad = [[None, "^", "A"], ["<", "v", ">"]]
+    best_paths = []
+    for path in parent_paths:
+        init = find_coord(directional_keypad, "A")  # Start at Button A
+        temp_best_paths = None
+        for c in path:
+            goal = find_coord(directional_keypad, c)
+            temp_paths = dijkstra(directional_keypad, init, goal)
+            init = goal
+            for p in temp_paths:
+                p.append("A")
 
-    # Step 1
+            # Append the next path found to the existing paths
+            if temp_best_paths is None:
+                temp_best_paths = temp_paths
+            else:
+                new_paths = []
+                for tbp in temp_best_paths:
+                    for tp in temp_paths:
+                        new_paths.append(tbp + tp)
+                temp_best_paths = new_paths
+
+        best_paths += temp_best_paths
+
+    # Find the shortest paths
+    min_path_length = float("inf")
+    for path in best_paths:
+        min_path_length = min(min_path_length, len(path))
+
+    best_paths = [path for path in best_paths if len(path) <= min_path_length]
+    return best_paths
+
+
+def shortest_sequence(code: str, count: int) -> int:
+    numeric_keypad = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"], [None, "0", "A"]]
+
     # numeric keypad to directional keypad
     init = find_coord(numeric_keypad, "A")  # Start at Button A
-    best_numpad_paths = None
+    best_paths = None
     for c in code:
         goal = find_coord(numeric_keypad, c)
         temp_paths = dijkstra(numeric_keypad, init, goal)
@@ -82,95 +114,40 @@ def shortest_sequence(code: str) -> int:
             p.append("A")
 
         # Append the next path found to the existing paths
-        if best_numpad_paths is None:
-            best_numpad_paths = temp_paths
+        if best_paths is None:
+            best_paths = temp_paths
         else:
             new_paths = []
-            for bp in best_numpad_paths:
+            for bp in best_paths:
                 for tp in temp_paths:
                     new_paths.append(bp + tp)
-            best_numpad_paths = new_paths
+            best_paths = new_paths
 
     # Find the shortest paths
     min_path_length = float("inf")
-    for path in best_numpad_paths:
+    for path in best_paths:
         min_path_length = min(min_path_length, len(path))
-    best_numpad_paths = [path for path in best_numpad_paths if len(path) <= min_path_length]
+    best_paths = [path for path in best_paths if len(path) <= min_path_length]
 
-    # Step 2
-    # directional keypad to robot 1 directional keypad
-    best_robot1_paths = []
-    for path in best_numpad_paths:
-        init = find_coord(directional_keypad, "A")  # Start at Button A
-        temp_best_robot1_paths = None
-        for c in path:
-            goal = find_coord(directional_keypad, c)
-            temp_paths = dijkstra(directional_keypad, init, goal)
-            init = goal
-            for p in temp_paths:
-                p.append("A")
+    while count > 0:
+        print(count)
+        best_directional_keypad_paths = directional_keypad_paths(best_paths)
+        best_paths = best_directional_keypad_paths
+        count -= 1
 
-            # Append the next path found to the existing paths
-            if temp_best_robot1_paths is None:
-                temp_best_robot1_paths = temp_paths
-            else:
-                new_paths = []
-                for bp in temp_best_robot1_paths:
-                    for tp in temp_paths:
-                        new_paths.append(bp + tp)
-                temp_best_robot1_paths = new_paths
-
-        best_robot1_paths += temp_best_robot1_paths
-
-    # Find the shortest paths
-    min_path_length = float("inf")
-    for robot1_path in best_robot1_paths:
-        min_path_length = min(min_path_length, len(robot1_path))
-
-    best_robot1_paths = [path for path in best_robot1_paths if len(path) <= min_path_length]
-
-    # Step 3
-    # robot 1 directional keypad to robot 2 directional keypad
-    best_robot2_paths = []
-    for path in best_robot1_paths:
-        init = find_coord(directional_keypad, "A")  # Start at Button A
-        temp_best_robot2_paths = None
-        for c in path:
-            goal = find_coord(directional_keypad, c)
-            temp_paths = dijkstra(directional_keypad, init, goal)
-            init = goal
-            for p in temp_paths:
-                p.append("A")
-
-            # Append the next path found to the existing paths
-            if temp_best_robot2_paths is None:
-                temp_best_robot2_paths = temp_paths
-            else:
-                new_paths = []
-                for bp in temp_best_robot2_paths:
-                    for tp in temp_paths:
-                        new_paths.append(bp + tp)
-                temp_best_robot2_paths = new_paths
-
-        best_robot2_paths += temp_best_robot2_paths
-
-    # Find the shortest paths
-    min_path_length = float("inf")
-    for robot2_path in best_robot2_paths:
-        min_path_length = min(min_path_length, len(robot2_path))
-
-    return min_path_length
+    return min(len(path) for path in best_paths)
 
 
-def total_complexities(raw_input: str) -> int:
+def total_complexities(raw_input: str, count: int) -> int:
     codes = format_data(raw_input)
 
     total = 0
     for code in codes:
-        total += shortest_sequence(code) * int(code.split("A")[0])
+        total += shortest_sequence(code, count) * int(code.split("A")[0])
     return total
 
 
 if __name__ == "__main__":
     file = read_file("inputs/input.txt")
-    print(f"Sum of the complexities: {total_complexities(file)}")
+    # print(f"Sum of the complexities: {total_complexities(file, count=2)}")
+    print(f"Sum of the complexities: {total_complexities(file, count=25)}")
