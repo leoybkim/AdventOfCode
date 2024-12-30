@@ -9,8 +9,7 @@ class Test(unittest.TestCase):
         self.test_file = read_file("inputs/test.txt")
 
     def testPart1(self):
-        # Wrong answer: 163872
-        pass
+        self.assertEqual(162740, total_complexities(self.input_file))
 
     def testPart2(self):
         pass
