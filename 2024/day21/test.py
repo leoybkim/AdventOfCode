@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
         self.assertEqual(162740, total_complexities(self.input_file, count=2))
 
     def testPart2(self):
-        pass
+        self.assertEqual(203640915832208, total_complexities(self.input_file, count=25))
 
     def testPart1Example1(self):
         self.assertEqual(126384, total_complexities(self.test_file, count=2))

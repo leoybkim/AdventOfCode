@@ -1,5 +1,17 @@
-import heapq
+from functools import lru_cache
 from typing import List
+
+NUMERIC_KEYPAD = {
+    "7": (0, 0), "8": (0, 1), "9": (0, 2),
+    "4": (1, 0), "5": (1, 1), "6": (1, 2),
+    "1": (2, 0), "2": (2, 1), "3": (2, 2),
+    "#": (3, 0), "0": (3, 1), "A": (3, 2)
+}
+
+DIRECTIONAL_KEYPAD = {
+    "#": (0, 0), "^": (0, 1), "A": (0, 2),
+    "<": (1, 0), "v": (1, 1), ">": (1, 2),
+}
 
 
 def read_file(input_file_path: str) -> str:
@@ -14,140 +26,57 @@ def format_data(raw_data: str) -> List[str]:
     return codes
 
 
-def dijkstra(grid: List[List[str]], init: tuple[int, int], goal: tuple[int, int]) -> List[List[str]]:
+def generate_shortest_path(keypad) -> dict:
     """
-    Dijkstra's algorithm to find the shortest path between two cells where turning is discouraged
-    ">^^", "^>^" and "^^>" all move to the same position but  "^>^" requires pressing more button when proxied
-    @param grid: Map
-    @param init: Initial cell coordinate
-    @param goal: Goal cell coordinate
-    @return: Directional symbols that creates shortest path from initial cell to goal cell
+    Generate a lookup for shortest path between all the keys.
+    It is best to avoid turning as much as possible to find the shortest path.
+    Prioritize the movements in the order of L, D, U, R
+    @param keypad: Keypad controller grid
+    @return: Best path between all the keys
     """
-    directions = [(-1, 0, "^", 0), (1, 0, "v", 0), (0, -1, "<", 100), (0, 1, ">", 100)]
-    best_cost = float("inf")
-    R, C = len(grid), len(grid[0])
-    visited = [[[False for _ in range(4)] for _ in range(C)] for _ in range(R)]
-    costs = [[[best_cost for _ in range(4)] for _ in range(C)] for _ in range(R)]
-    init_r, init_c = init
-    pq = [(0, init_r, init_c, -1, [])]  # cost, row, column, direction, path
-    costs[init_r][init_c][-1] = 0
-    best_paths = []
-
-    def in_bound(r: int, c: int) -> bool:
-        return 0 <= r < R and 0 <= c < C
-
-    while pq:
-        cur_cost, cur_r, cur_c, cur_dir, cur_path = heapq.heappop(pq)
-
-        # Keep track of best paths
-        if (cur_r, cur_c) == goal:
-            if cur_cost <= best_cost:
-                best_cost = cur_cost
-                best_paths.append(cur_path)
-
-        visited[cur_r][cur_c][cur_dir] = True
-
-        for i, (dr, dc, symbol, dir_cost) in enumerate(directions):
-            nr, nc = cur_r + dr, cur_c + dc
-            if in_bound(nr, nc) and not visited[nr][nc][i] and grid[nr][nc] is not None:
-                new_cost = cur_cost + (1 if cur_dir == i else 1001) + dir_cost  # Discourage turning
-                if new_cost < costs[nr][nc][i]:
-                    costs[nr][nc][i] = new_cost
-                    heapq.heappush(pq, (new_cost, nr, nc, i, cur_path + [symbol]))
-                elif new_cost == costs[nr][nc][i]:
-                    heapq.heappush(pq, (new_cost, nr, nc, i, cur_path + [symbol]))
-    return best_paths
+    shortest_path = {}
+    for k1, (r1, c1) in keypad.items():
+        if k1 != "#":
+            for k2, (r2, c2) in keypad.items():
+                if k2 != "#":
+                    L = "<" * (c1 - c2)
+                    D = "v" * (r2 - r1)
+                    U = "^" * (r1 - r2)
+                    R = ">" * (c2 - c1)
+                    if (r1, c2) == keypad["#"] or (r2, c1) == keypad["#"]:
+                        # Switch around the order of horizontal and vertical moves if path goes out of boundary
+                        shortest_path[(k1, k2)] = R + D + U + L + "A"
+                    else:
+                        shortest_path[(k1, k2)] = L + D + U + R + "A"
+    return shortest_path
 
 
-def find_coord(grid: List[List[str]], c: str) -> tuple[int, int]:
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i][j] == c:
-                return i, j
+NUMERIC_KEYPAD_PATH = generate_shortest_path(NUMERIC_KEYPAD)
+DIRECTIONAL_KEYPAD_PATH = generate_shortest_path(DIRECTIONAL_KEYPAD)
 
 
-def directional_keypad_paths(parent_paths):
-    directional_keypad = [[None, "^", "A"], ["<", "v", ">"]]
-    best_paths = []
-    for path in parent_paths:
-        init = find_coord(directional_keypad, "A")  # Start at Button A
-        temp_best_paths = None
-        for c in path:
-            goal = find_coord(directional_keypad, c)
-            temp_paths = dijkstra(directional_keypad, init, goal)
-            init = goal
-            for p in temp_paths:
-                p.append("A")
-
-            # Append the next path found to the existing paths
-            if temp_best_paths is None:
-                temp_best_paths = temp_paths
-            else:
-                new_paths = []
-                for tbp in temp_best_paths:
-                    for tp in temp_paths:
-                        new_paths.append(tbp + tp)
-                temp_best_paths = new_paths
-
-        best_paths += temp_best_paths
-
-    # Find the shortest paths
-    min_path_length = float("inf")
-    for path in best_paths:
-        min_path_length = min(min_path_length, len(path))
-
-    best_paths = [path for path in best_paths if len(path) <= min_path_length]
-    return best_paths
-
-
-def shortest_sequence(code: str, count: int) -> int:
-    numeric_keypad = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"], [None, "0", "A"]]
-
-    # numeric keypad to directional keypad
-    init = find_coord(numeric_keypad, "A")  # Start at Button A
-    best_paths = None
-    for c in code:
-        goal = find_coord(numeric_keypad, c)
-        temp_paths = dijkstra(numeric_keypad, init, goal)
-        init = goal
-        for p in temp_paths:
-            p.append("A")
-
-        # Append the next path found to the existing paths
-        if best_paths is None:
-            best_paths = temp_paths
-        else:
-            new_paths = []
-            for bp in best_paths:
-                for tp in temp_paths:
-                    new_paths.append(bp + tp)
-            best_paths = new_paths
-
-    # Find the shortest paths
-    min_path_length = float("inf")
-    for path in best_paths:
-        min_path_length = min(min_path_length, len(path))
-    best_paths = [path for path in best_paths if len(path) <= min_path_length]
-
+@lru_cache
+def shortest_sequence(code: str, count: int, numeric_keypad: bool) -> int:
     while count > 0:
-        print(count)
-        best_directional_keypad_paths = directional_keypad_paths(best_paths)
-        best_paths = best_directional_keypad_paths
-        count -= 1
-
-    return min(len(path) for path in best_paths)
+        keypad = NUMERIC_KEYPAD_PATH if numeric_keypad else DIRECTIONAL_KEYPAD_PATH
+        total = 0
+        start = "A"
+        for key in code:
+            total += shortest_sequence(keypad[start, key], count if numeric_keypad else count - 1, numeric_keypad=False)
+            start = key
+        return total
+    return len(code)
 
 
 def total_complexities(raw_input: str, count: int) -> int:
     codes = format_data(raw_input)
-
     total = 0
     for code in codes:
-        total += shortest_sequence(code, count) * int(code.split("A")[0])
+        total += shortest_sequence(code, count, numeric_keypad=True) * int(code.split("A")[0])
     return total
 
 
 if __name__ == "__main__":
     file = read_file("inputs/input.txt")
-    # print(f"Sum of the complexities: {total_complexities(file, count=2)}")
+    print(f"Sum of the complexities: {total_complexities(file, count=2)}")
     print(f"Sum of the complexities: {total_complexities(file, count=25)}")
