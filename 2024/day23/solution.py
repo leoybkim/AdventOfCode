@@ -15,35 +15,38 @@ def format_data(raw_data: str) -> List[tuple[str, str]]:
     return connections
 
 
-def dfs(graph: dict, vertex: str, party: list, visited: dict) -> list | None:
-    visited[vertex] = True
-    if len(party) == 3:
-        # Found LAN Party
-        return party if vertex == party[0] else None
-    party.append(vertex)
-    for v in graph[vertex]:
-        if not visited[v] or (v == party[0] and len(party) == 3):
-            dfs(graph, v, party, visited)
+def find_parties(network):
+    parties = set()
+
+    for v in network:
+        neighbours = list(network[v])
+        # Check each pair of neighbours
+        for i in range(len(neighbours)):
+            for j in range(i + 1, len(neighbours)):
+                n1 = neighbours[i]
+                n2 = neighbours[j]
+
+                # Party if there's an edge between the two neighbours
+                if n2 in network[n1]:
+                    party = frozenset([v, n1, n2])  # To avoid permutations
+                    parties.add(party)
+
+    return parties
 
 
 def lan_party_search(raw_input: str) -> int:
     connections = format_data(raw_input)
-
     network = defaultdict(set)
     for link1, link2 in connections:
         network[link1].add(link2)
         network[link2].add(link1)
-    for v in network:
-        parties = []
-        visited = {computer: False for computer in network}
-        party = dfs(network, v, [], visited)
-        if party is not None:
-            parties.append(party)
+
+    parties = find_parties(network)
 
     count = 0
     for party in parties:
-        count += any("t" in v for v in party)
-    return 0
+        count += any("t" == v[0] for v in party)
+    return count
 
 
 if __name__ == "__main__":

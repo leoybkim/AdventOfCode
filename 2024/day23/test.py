@@ -9,7 +9,7 @@ class Test(unittest.TestCase):
         self.test_file = read_file("inputs/test.txt")
 
     def testPart1(self):
-        pass
+        self.assertEqual(1156, lan_party_search(self.input_file))
 
     def testPart2(self):
         pass
