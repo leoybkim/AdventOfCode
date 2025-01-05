@@ -4,7 +4,7 @@
 
 ## Clique
 
-A clique is a subset of vertices in a graph where every pari of vertices in the subset is directly connected by an edge.
+A clique is a subset of vertices in a graph where every part of vertices in the subset is directly connected by an edge.
 In other words, it is a group of vertices where each one is connected to every other vertices in that group.
 
 The first part of the puzzle is finding a clique of a given size (in this case, 3). The second part of the puzzle is finding the largest clique.

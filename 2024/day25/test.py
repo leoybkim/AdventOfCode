@@ -9,16 +9,10 @@ class Test(unittest.TestCase):
         self.test_file = read_file("inputs/test.txt")
 
     def testPart1(self):
-        pass
-
-    def testPart2(self):
-        pass
+        self.assertEqual(3136, count_pairs(self.input_file))
 
     def testPart1Example1(self):
-        self.assertEqual(3, find_pairs(self.test_file))
-
-    def testPart2Example1(self):
-        pass
+        self.assertEqual(3, count_pairs(self.test_file))
 
 
 if __name__ == "__main__":
