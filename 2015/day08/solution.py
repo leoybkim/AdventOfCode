@@ -11,26 +11,47 @@ def format_data(raw_input: str) -> list[str]:
 
 
 def num_char_in_memory(line: str) -> int:
-    length = len(line) - 2  # Subtract outer quotes
-    count = length
-    for i in range(1, length):
-        c = line[i]
-        if i <= length - 1 and line[i] == "\\" and (line[i + 1] == "\\" or line[i + 1] == '"'):
-            if i <= length - 2 and (line[i + 2] == "x" or line[i + 2] == '"'):
-                continue
-            count -= 1  # Subtract escaping for slash or quote character
-        elif i <= length - 3 and line[i:i + 2] == "\\x":
-            count -= 3  # \x0A represents one ASCII code
-    return count
+    repeat = True
+    s = 0
+    while repeat:
+        repeat = False
+        for i in range(s, len(line)):
+            if i <= len(line) - 2 and line[i] == "\\" and (line[i + 1] == "\\" or line[i + 1] == '"'):
+                # If '\\' or '\"' , remove the first slash and evaluate again
+                line = line[0:i] + line[i + 1:]
+                repeat = True
+                s = i + 1
+                break
+            elif i <= len(line) - 4 and line[i:i + 2] == "\\x" and line[i + 2:i + 4].isalnum():
+                # if '\x0A' ASCII representation, remove three of the 4 literal characters
+                line = line[0:i] + line[i + 3:]
+                repeat = True
+                s = i + 1
+                break
+
+    return len(line) - 2
 
 
-def calculate_string(raw_input: str) -> int:
+def num_char_in_new_encoding(line: str) -> int:
+    special = 0
+    for c in line:
+        if c == '"' or c == "\\":
+            special += 1
+    return len(line) + special + 2
+
+
+def calculate_string(raw_input: str, new=False) -> int:
     data = format_data(raw_input)
     total = 0
 
-    for d in data:
-        total += len(d)
-        total -= num_char_in_memory(d)
+    if new:
+        for d in data:
+            total += num_char_in_new_encoding(d)
+            total -= len(d)
+    else:
+        for d in data:
+            total += len(d)
+            total -= num_char_in_memory(d)
 
     return total
 
@@ -39,3 +60,6 @@ if __name__ == "__main__":
     file = read_file("inputs/input.txt")
     print(f"Total number of characters of code for string literals minus "
           f"total number of characters in memory for the value of string: {calculate_string(file)}")
+
+    print(f"Total number of characters new encoded string minus "
+          f"total number of characters of code in each original string literal: {calculate_string(file, new=True)}")
