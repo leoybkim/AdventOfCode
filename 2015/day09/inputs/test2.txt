@@ -1,0 +1,6 @@
+London to Dublin = 464
+London to Belfast = 518
+Dublin to Belfast = 141
+London to Paris = 500
+Paris to Belfast = 300
+Dublin to Paris = 200
