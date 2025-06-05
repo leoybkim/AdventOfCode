@@ -53,7 +53,7 @@ def find_shortest_distance(raw_input: str) -> int:
     city_to_idx = {city: idx for idx, city in enumerate(cities)}
 
     # enumerate the cities and the distance between the two is stored on the 2D matrix
-    distances = [[float('inf') for _ in range(n)] for _ in range(n)]
+    distances = [[float("inf") for _ in range(n)] for _ in range(n)]
     for i in range(n):
         for j in range(n):
             distances[i][j] = adj[idx_to_city[i]][idx_to_city[j]] if i != j else 0
@@ -65,11 +65,34 @@ def find_shortest_distance(raw_input: str) -> int:
     return min(min_distances)
 
 
-def modified_Held_Karp_algorithm(s_idx: int, distances: List[List[int]]) -> int:
+def find_longest_distance(raw_input: str) -> int:
+    data = format_data(raw_input)
+    adj = adjacency_map(data)
+    cities = find_unique_cities(data)
+
+    n = len(cities)
+    idx_to_city = {idx: city for idx, city in enumerate(cities)}
+    city_to_idx = {city: idx for idx, city in enumerate(cities)}
+
+    # enumerate the cities and the distance between the two is stored on the 2D matrix
+    distances = [[float("-inf") for _ in range(n)] for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            distances[i][j] = adj[idx_to_city[i]][idx_to_city[j]] if i != j else 0
+
+    max_distances = []  # minimum distances found for each starting city
+    for city in cities:
+        max_distances.append(modified_Held_Karp_algorithm(city_to_idx[city], distances, inverse=True))
+
+    return max(max_distances)
+
+
+def modified_Held_Karp_algorithm(s_idx: int, distances: List[List[int]], inverse=False) -> int:
     """
     Modified Held Karp algorithm for finding the minimum cost of visiting all cities exactly once given a starting city.
     :param s_idx: starting city index
     :param distances: adjacency matrix
+    :param inverse: parameter to change the heuristics from min cost to max cost
     :return: Hamiltonian path cost starting from city i and ending at any city.
     """
     n = len(distances)  # total number of cities
@@ -112,21 +135,22 @@ def modified_Held_Karp_algorithm(s_idx: int, distances: List[List[int]]) -> int:
                             cost = dp[(prev_mask, m)][0] + distances[m][k]
                             path.append((cost, m))
                 if path:
-                    dp[(subset_mask, k)] = min(path)
+                    dp[(subset_mask, k)] = max(path) if inverse else min(path)
 
     # final bitmask is used to query the dynamic programming table for all cities visited excluding the starting city
     final_mask = ((1 << n) - 1) ^ (1 << s_idx)
-    min_cost = float("inf")
+    min_cost = float("-inf") if inverse else float("inf")
 
     # calculate optimal cost
     for k in range(n):
         if k != s_idx:
             if (final_mask, k) in dp:
                 cost = dp[(final_mask, k)][0]
-                min_cost = min(min_cost, cost)
+                min_cost = max(min_cost, cost) if inverse else min(min_cost, cost)
     return min_cost
 
 
 if __name__ == "__main__":
     file = read_file("inputs/input.txt")
     print(f"Distance of the shortest route: {find_shortest_distance(file)}")
+    print(f"Distance of the shortest route: {find_longest_distance(file)}")
