@@ -23,8 +23,8 @@ def adjacency_map(data: list) -> dict:
     Create an adjacency list representation using a map.
     Outer dictionary key is the starting city, the inner keys are the destination cities,
     and the values are the traveling distance between those cities.
-    @param data: Tuple of (A, B, distance) where A is the starting city, B is the destination and the distance
-    @return: Adjacency list representation of the graph
+    :param data: Tuple of (A, B, distance) where A is the starting city, B is the destination and the distance
+    :return: Adjacency list representation of the graph
     """
     adj = defaultdict(dict)
     for A, B, distance in data:
@@ -153,4 +153,4 @@ def modified_Held_Karp_algorithm(s_idx: int, distances: List[List[int]], inverse
 if __name__ == "__main__":
     file = read_file("inputs/input.txt")
     print(f"Distance of the shortest route: {find_shortest_distance(file)}")
-    print(f"Distance of the shortest route: {find_longest_distance(file)}")
+    print(f"Distance of the longest route: {find_longest_distance(file)}")
