@@ -73,8 +73,6 @@ However, the key difference in this puzzle from the TSP is that the puzzle does 
 It is actually more correct to categorize it as the Hamiltonian path problem, which is a problem that requires finding a path that visits every vertex in the graph exactly once.
 Which means that the choice of the starting city does matter. So the modified algorithm must consider all possible starting points to find the optimal cost.
 
-The run time can be improved with more complex algorithms such as Monte Carlo algorithm $O(1.657^{n})$, or a SAT solver
-
 #### References
 <a id="1">[1]</a> Travelling salesman problem [https://en.wikipedia.org/wiki/Travelling_salesman_problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)\
 <a id="2">[2]</a> Held–Karp algorithm [https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm](https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm)\
