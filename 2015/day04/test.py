@@ -10,10 +10,10 @@ class Test(unittest.TestCase):
         self.test_file2 = read_file("inputs/test2.txt")
 
     def testPart1(self):
-        self.assertEqual(282749, find_number(self.test_file1))
+        self.assertEqual(282749, find_number(self.input_file))
 
     def testPart2(self):
-        self.assertEqual(9962624, find_number(self.test_file1, zeros=6))
+        self.assertEqual(9962624, find_number(self.input_file, zeros=6))
 
     def testPart1Example1(self):
         self.assertEqual(609043, find_number(self.test_file1))

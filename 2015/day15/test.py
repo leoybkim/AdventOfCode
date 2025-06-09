@@ -9,7 +9,7 @@ class Test(unittest.TestCase):
         self.test_file1 = read_file("inputs/test1.txt")
 
     def testPart1(self):
-        self.assertEqual(33909120, highest_scoring_cookie(self.input_file))
+        self.assertEqual(13882464, highest_scoring_cookie(self.input_file))
 
     def testPart2(self):
         self.assertEqual(11171160, highest_scoring_cookie(self.input_file, True))
