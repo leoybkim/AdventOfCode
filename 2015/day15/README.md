@@ -8,5 +8,4 @@ Python standard library `itertools.combinations_with_replacement`[[1]](#1) saves
 
 #### References
 
-<a id="1">[1]</a> itertools — Functions creating iterators for efficient
-looping [https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement](https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement)
+<a id="1">[1]</a> itertools — Functions creating iterators for efficient looping [https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement](https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement)
