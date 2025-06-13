@@ -20,4 +20,5 @@
 [day 16](day16/README.md)\
 [day 17](day17/README.md)\
 [day 18](day18/README.md)\
-[day 19](day19/README.md)
+[day 19](day19/README.md)\
+[day 20](day20/README.md)
