@@ -3,4 +3,5 @@
 [adventofcode.com/2016](https://adventofcode.com/2016)
 
 [day 1](day01/README.md)\
-[day 2](day02/README.md)
+[day 2](day02/README.md)\
+[day 3](day03/README.md)
