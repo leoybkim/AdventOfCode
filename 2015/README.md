@@ -24,4 +24,5 @@
 [day 20](day20/README.md)\
 [day 21](day21/README.md)\
 [day 22](day22/README.md)\
-[day 23](day23/README.md)
+[day 23](day23/README.md)\
+[day 24](day24/README.md)
