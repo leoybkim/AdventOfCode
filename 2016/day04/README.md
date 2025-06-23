@@ -1,3 +1,3 @@
-# Day 3
+# Day 4
 
-[adventofcode.com/2016/day/3](https://adventofcode.com/2016/day/3)
+[adventofcode.com/2016/day/4](https://adventofcode.com/2016/day/4)
