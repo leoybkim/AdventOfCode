@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
     def testPart1(self):
         self.assertEqual(128, num_lit_pixels(self.input_file))
 
-    def testPart1Example(self):
+    def testPart2(self):
         self.assertEqual(6, num_lit_pixels(self.test_file, row=3, col=7))
 
 
