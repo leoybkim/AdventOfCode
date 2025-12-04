@@ -6,13 +6,13 @@ def parse_file(input_file_path: str) -> list[list[str]]:
     return grid
 
 
-def can_access(x: int, y: int, map: list[list[str]]) -> bool:
+def can_access(x: int, y: int, grid: list[list[str]]) -> bool:
     # loop through 8 adjacent positions
     roll_count = 0
     adj = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
     for dx, dy in adj:
-        if 0 <= x + dx < len(map) and 0 <= y + dy < len(map[0]):
-            roll_count += map[x + dx][y + dy] == "@"
+        if 0 <= x + dx < len(grid) and 0 <= y + dy < len(grid[0]):
+            roll_count += grid[x + dx][y + dy] == "@"
             if roll_count >= 4:
                 return False
     return True
