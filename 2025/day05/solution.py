@@ -34,7 +34,7 @@ def part_one(input_file_path: str):
     ranges, ids = parse_file(input_file_path)
     for v in ids:
         for s, e in ranges:
-            if v in range(s, e + 1):
+            if s <= v <= e:
                 count += 1
                 break
     return count
