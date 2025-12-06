@@ -40,11 +40,15 @@ Context-free grammar rules include any rules allowed by Regular grammars.
 
 The basic idea behind the parsing algorithm is to determine if a given input string (target molecule from puzzle input)
 can be derived by the grammar rules.
-Finding the minimum steps to derive is the goal of this problem. For a grammar in CNF (Chompsky Normal Form), if a string has length $n$, any
+Finding the minimum steps to derive is the goal of this problem. For a grammar in CNF (Chompsky Normal Form), if a
+string has length $n$, any
 derivation of string from any non-terminal will contain exactly $2n - 1$ steps. This is because each terminal
-production $A -> a$ consumes one non-terminal and produces one terminal. Each binary production $A -> BC$ consumes one non-terminal and produces two non-terminal.
-The total number of grammar rules applied to go from the start symbol to the string would be $n - 1 \; (binary \;rules) + n \; (terminal \;rules) = 2n - 1$.
-But this is *if* the grammar is provided in CNF. The puzzle is asking for minimum steps took from the given input grammar rules which is in CFG but not necessarily in CNF.
+production $A -> a$ consumes one non-terminal and produces one terminal. Each binary production $A -> BC$ consumes one
+non-terminal and produces two non-terminal.
+The total number of grammar rules applied to go from the start symbol to the string would
+be $n - 1 \; (binary \;rules) + n \; (terminal \;rules) = 2n - 1$.
+But this is *if* the grammar is provided in CNF. The puzzle is asking for minimum steps took from the given input
+grammar rules which is in CFG but not necessarily in CNF.
 
 TODO: come back to this puzzle, backreference might be possible?
 
@@ -175,7 +179,11 @@ If $w$ is of length $n$, $w = \sigma_1\sigma_2...\sigma_n$
 
 #### References
 
-<a id="1">[1]</a> Context-free grammar [https://en.wikipedia.org/wiki/Context-free_grammar](https://en.wikipedia.org/wiki/Context-free_grammar)\
-<a id="1">[2]</a> Regular grammar [https://en.wikipedia.org/wiki/Regular_grammar](https://en.wikipedia.org/wiki/Regular_grammar)\
-<a id="1">[3]</a> CYK algorithm [https://en.wikipedia.org/wiki/CYK_algorithm](https://en.wikipedia.org/wiki/CYK_algorithm)\
-<a id="1">[4]</a> Chomsky normal form [https://en.wikipedia.org/wiki/Chomsky_normal_form](https://en.wikipedia.org/wiki/Chomsky_normal_form)
+<a id="1">[1]</a> Context-free
+grammar [https://en.wikipedia.org/wiki/Context-free_grammar](https://en.wikipedia.org/wiki/Context-free_grammar)\
+<a id="1">[2]</a> Regular
+grammar [https://en.wikipedia.org/wiki/Regular_grammar](https://en.wikipedia.org/wiki/Regular_grammar)\
+<a id="1">[3]</a> CYK
+algorithm [https://en.wikipedia.org/wiki/CYK_algorithm](https://en.wikipedia.org/wiki/CYK_algorithm)\
+<a id="1">[4]</a> Chomsky normal
+form [https://en.wikipedia.org/wiki/Chomsky_normal_form](https://en.wikipedia.org/wiki/Chomsky_normal_form)

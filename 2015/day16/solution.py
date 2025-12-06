@@ -1,5 +1,7 @@
 from re import match
 
+from utils.input_reader import read_file
+
 # Message on ticker tape
 hints = {
     "children": 3,
@@ -13,11 +15,6 @@ hints = {
     "cars": 2,
     "perfumes": 1
 }
-
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
 
 
 def parse_info(raw_input: str) -> dict:
@@ -60,6 +57,6 @@ def find_aunt_sue(raw_input: str, adjust_readings=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Aunt Sue # that got you the gift is: {find_aunt_sue(input)}")
-    print(f"Aunt Sue # that got you the gift after adjusting for bad readings: {find_aunt_sue(input, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"Aunt Sue # that got you the gift is: {find_aunt_sue(file)}")
+    print(f"Aunt Sue # that got you the gift after adjusting for bad readings: {find_aunt_sue(file, True)}")

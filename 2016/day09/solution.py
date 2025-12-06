@@ -1,6 +1,4 @@
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def decompressed_length(input_str: str, s=0, e=None, part2=False) -> int:

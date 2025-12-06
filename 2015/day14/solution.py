@@ -1,10 +1,7 @@
 from re import match
 from typing import List
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_info(raw_input: str) -> List[tuple[str, int, int, int]]:
@@ -83,6 +80,6 @@ def winning_raindeer_points(raw_input: str, seconds: int) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Winning raindeer distance after 2503 seconds: {winning_raindeer_distance(input, 2503)}")
-    print(f"Winning raindeer points after 2503 seconds: {winning_raindeer_points(input, 2503)}")
+    file = read_file("inputs/input.txt")
+    print(f"Winning raindeer distance after 2503 seconds: {winning_raindeer_distance(file, 2503)}")
+    print(f"Winning raindeer points after 2503 seconds: {winning_raindeer_points(file, 2503)}")

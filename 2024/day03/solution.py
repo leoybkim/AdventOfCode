@@ -1,5 +1,7 @@
 import re
 
+from utils.input_reader import read_file
+
 
 def sum_multiplications(data: str) -> int:
     pattern = r"mul\((\d{1,3}),(\d{1,3})\)"
@@ -20,11 +22,6 @@ def sum_disabled_multiplications(data: str) -> int:
 
 def sum_enabled_multiplications(data: str) -> int:
     return sum_multiplications(data) - sum_disabled_multiplications(data)
-
-
-def read_file(input_file_path: str) -> str:
-    with open(input_file_path) as input_file:
-        return input_file.read()
 
 
 if __name__ == "__main__":

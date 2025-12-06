@@ -2,6 +2,8 @@ import re
 from copy import deepcopy
 from heapq import heappop, heappush
 
+from utils.input_reader import read_file
+
 
 class Character:
     def __init__(self, hp):
@@ -191,11 +193,6 @@ class Game:
         return next_states
 
 
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
-
-
 def parse_boss_stats(raw_input: str) -> tuple[int, int] | None:
     pattern = re.compile(
         r"^Hit Points: (\d+)\n"
@@ -253,6 +250,6 @@ def find_min_mana_required(raw_input: str, hp=50, mana=500, hard=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"What is the minimum mana required to win?: {find_min_mana_required(input)}")
-    print(f"What is the minimum mana required to win in hard mode?: {find_min_mana_required(input, hard=True)}")
+    file = read_file("inputs/input.txt")
+    print(f"What is the minimum mana required to win?: {find_min_mana_required(file)}")
+    print(f"What is the minimum mana required to win in hard mode?: {find_min_mana_required(file, hard=True)}")

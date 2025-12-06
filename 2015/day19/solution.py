@@ -1,9 +1,6 @@
 from re import match
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_rules(raw_input: str) -> tuple[list[tuple], str]:
@@ -97,10 +94,11 @@ def cheat(raw_input: str) -> int:
     total steps = (total atoms) - (extra atoms from parentheses) - (extra atoms from commas) - 1
     """
     rules, molecule = parse_rules(raw_input)
-    return sum(c.isupper() for c in molecule) - molecule.count("Rn") - molecule.count("Ar") - 2 * molecule.count("Y") - 1
+    return sum(c.isupper() for c in molecule) - molecule.count("Rn") - molecule.count("Ar") - 2 * molecule.count(
+        "Y") - 1
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Number of distinct molecules that can be created: {distinct_molecules(input)}")
-    print(f"Fewest steps to go from 'e' to medicine molecule: {generate_molecule(input)}")
+    file = read_file("inputs/input.txt")
+    print(f"Number of distinct molecules that can be created: {distinct_molecules(file)}")
+    print(f"Fewest steps to go from 'e' to medicine molecule: {generate_molecule(file)}")

@@ -1,5 +1,7 @@
 from typing import List
 
+from utils.input_reader import read_file
+
 
 def is_safe(report: List[int]) -> bool:
     """
@@ -19,7 +21,7 @@ def is_safe(report: List[int]) -> bool:
     return True
 
 
-def num_safe_reports(input_file_path: str, dampener=0) -> int:
+def num_safe_reports(data: str, dampener=0) -> int:
     """
     Read the input file
     Extract each line as List of ints which represents a report
@@ -30,23 +32,22 @@ def num_safe_reports(input_file_path: str, dampener=0) -> int:
     :return: Number of safe reports
     """
     count = 0
-    with (open(input_file_path, "r") as input_file):
-        for line in input_file:
-            report = list(map(int, line.split()))  # Split the line at whitespace and convert to List of ints
-            if dampener:
-                # Allow for removal of one bad level. Iterate through each level and check if sublist is safe without it.
-                for i in range(len(report)):
-                    sublist_report = report[:i] + report[i + 1:]  # Remove one level at index i and create a sublist
-                    if is_safe(sublist_report):
-                        count += 1
-                        break
-            else:
-                if is_safe(report):
+    for line in data.splitlines():
+        report = list(map(int, line.split()))  # Split the line at whitespace and convert to List of ints
+        if dampener:
+            # Allow for removal of one bad level. Iterate through each level and check if sublist is safe without it.
+            for i in range(len(report)):
+                sublist_report = report[:i] + report[i + 1:]  # Remove one level at index i and create a sublist
+                if is_safe(sublist_report):
                     count += 1
+                    break
+        else:
+            if is_safe(report):
+                count += 1
     return count
 
 
 if __name__ == "__main__":
-    file = "inputs/input.txt"
+    file = read_file("inputs/input.txt")
     print(f"Total number of safe reports: {num_safe_reports(file)}")
     print(f"Total number of safe reports (with dampener): {num_safe_reports(file, dampener=1)}")

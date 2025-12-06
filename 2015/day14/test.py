@@ -1,12 +1,12 @@
 import unittest
 
-from solution import *
+from .solution import *
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.input_file = read_file("inputs/input.txt")
-        self.test_file1 = read_file("inputs/test1.txt")
+        self.input_file = read_file("inputs/input.txt", __file__)
+        self.test_file1 = read_file("inputs/test1.txt", __file__)
 
     def testPart1(self):
         self.assertEqual(2660, winning_raindeer_distance(self.input_file, 2503))

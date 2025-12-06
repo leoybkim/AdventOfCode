@@ -1,9 +1,6 @@
 from re import match
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_instructions(raw_input: str) -> list:
@@ -87,6 +84,7 @@ def get_register_b(raw_input: str, reg_a=0) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"The value in register b when program finishes executing: {get_register_b(input)}")
-    print(f"The value in register b when program finishes executing if register a starts as 1: {get_register_b(input, reg_a=1)}")
+    file = read_file("inputs/input.txt")
+    print(f"The value in register b when program finishes executing: {get_register_b(file)}")
+    print(
+        f"The value in register b when program finishes executing if register a starts as 1: {get_register_b(file, reg_a=1)}")

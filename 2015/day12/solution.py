@@ -1,9 +1,6 @@
 import json
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_list(array: list, total: int, exclude_red=False) -> int:
@@ -55,6 +52,6 @@ def sum_all_numbers(json_string: str, exclude_red=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Sum of all numbers in the JSON document: {sum_all_numbers(input)}")
-    print(f"Sum of all numbers in the JSON document, excluding key 'red': {sum_all_numbers(input, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"Sum of all numbers in the JSON document: {sum_all_numbers(file)}")
+    print(f"Sum of all numbers in the JSON document, excluding key 'red': {sum_all_numbers(file, True)}")

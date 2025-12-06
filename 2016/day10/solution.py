@@ -2,10 +2,7 @@ import functools
 import re
 from collections import defaultdict, deque
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_instructions(raw_input: str) -> tuple[list, dict]:

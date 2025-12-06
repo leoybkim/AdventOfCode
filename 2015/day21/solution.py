@@ -1,6 +1,8 @@
 import re
 from itertools import combinations
 
+from utils.input_reader import read_file
+
 item_shop = {
     "weapons": {
         "dagger": (8, 4, 0),  # cost, damage, armour
@@ -25,11 +27,6 @@ item_shop = {
         "defence +3": (80, 0, 3)
     }
 }
-
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
 
 
 def parse_boss_stats(raw_input: str) -> tuple[int, int, int] | None:
@@ -127,6 +124,7 @@ def find_min_gold_required(raw_input: str, reverse=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"What is the least amount of gold you can spend and still win the fight: {find_min_gold_required(input)}")
-    print(f"What is the most amount of gold you can spend and still lose the fight: {find_min_gold_required(input, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"What is the least amount of gold you can spend and still win the fight: {find_min_gold_required(file)}")
+    print(
+        f"What is the most amount of gold you can spend and still lose the fight: {find_min_gold_required(file, True)}")

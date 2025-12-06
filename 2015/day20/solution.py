@@ -1,6 +1,4 @@
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def find_lowest_house_number(raw_input: str) -> int:
@@ -44,6 +42,6 @@ def find_lowest_house_number2(raw_input: str) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Lowest house number of the house to get as least as many presents: {find_lowest_house_number(input)}")
-    print(f"Lowest house number with new rules: {find_lowest_house_number2(input)}")
+    file = read_file("inputs/input.txt")
+    print(f"Lowest house number of the house to get as least as many presents: {find_lowest_house_number(file)}")
+    print(f"Lowest house number with new rules: {find_lowest_house_number2(file)}")

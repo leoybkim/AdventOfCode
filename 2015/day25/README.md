@@ -41,4 +41,5 @@ The diagonal number `n` is equal to `row + column - 1` on a 1-index table.
 So the `K` based on `row` and `column` will first need to determine the diagonal `n`. Then within the numbers in the
 diagonal list, K will be at the `column`th position.
 
-For example, `K` will be `14` at `row=2` and `column=4` in the above table. `n = 2 + 4 - 1 = 5`. Diagonals are `[x for x in range((4 * 5 // 2) + 1, ((4 * 5 // 2) + n) + 1)] = [11, 12, 13, 14, 15]`. And `diagonal[column=4] = 14`.  
+For example, `K` will be `14` at `row=2` and `column=4` in the above table. `n = 2 + 4 - 1 = 5`. Diagonals are
+`[x for x in range((4 * 5 // 2) + 1, ((4 * 5 // 2) + n) + 1)] = [11, 12, 13, 14, 15]`. And `diagonal[column=4] = 14`.  

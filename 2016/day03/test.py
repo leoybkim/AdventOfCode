@@ -1,11 +1,11 @@
 import unittest
 
-from solution import *
+from .solution import *
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.input_file = read_file("inputs/input.txt")
+        self.input_file = read_file("inputs/input.txt", __file__)
 
     def testPart1(self):
         self.assertEqual(869, possible_triangles(self.input_file))

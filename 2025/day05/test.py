@@ -1,17 +1,12 @@
-import os
-import sys
 import unittest
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
-from solution import part_one, part_two
+from .solution import *
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.input_file = os.path.join(base_dir, "inputs", "input.txt")
-        self.test_file = os.path.join(base_dir, "inputs", "test.txt")
+        self.input_file = read_file("inputs/input.txt", __file__)
+        self.test_file = read_file("inputs/test.txt", __file__)
 
     def testPart1(self):
         self.assertEqual(744, part_one(self.input_file))

@@ -1,6 +1,4 @@
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_grid(raw_input: str) -> list:
@@ -51,6 +49,6 @@ def count_lights(raw_input: str, steps: int, corner_on=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Number of lights on after 100 steps: {count_lights(input, 100)}")
-    print(f"Number of lights on after 100 steps with stuck corner lights: {count_lights(input, 100, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"Number of lights on after 100 steps: {count_lights(file, 100)}")
+    print(f"Number of lights on after 100 steps with stuck corner lights: {count_lights(file, 100, True)}")

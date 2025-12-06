@@ -1,9 +1,6 @@
 from re import match
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_instruction(raw_input: str) -> tuple[int, int]:
@@ -50,5 +47,5 @@ def find_k(r: int, c: int) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"The CODE: {find_code(input)}")
+    file = read_file("inputs/input.txt")
+    print(f"The CODE: {find_code(file)}")

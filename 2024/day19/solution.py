@@ -1,6 +1,4 @@
-def read_file(input_file_path: str) -> str:
-    with open(input_file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def format_data(raw_data: str) -> tuple:

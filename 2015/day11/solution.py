@@ -1,9 +1,6 @@
 from itertools import groupby
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def validate_password(password: str) -> bool:
@@ -88,6 +85,6 @@ def increment_string(current_string: str) -> str:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Santa's new password is: {generate_password(input)}")
-    print(f"Santa's next new password is: {generate_password(input, 2)}")
+    file = read_file("inputs/input.txt")
+    print(f"Santa's new password is: {generate_password(file)}")
+    print(f"Santa's next new password is: {generate_password(file, 2)}")

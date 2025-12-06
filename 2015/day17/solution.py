@@ -1,9 +1,6 @@
 from itertools import combinations
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def count_combinations(raw_input: str, target: int) -> int:
@@ -39,6 +36,7 @@ def count_minimum_combinations(raw_input: str, target: int) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Number of different combinations of containers: {count_combinations(input, 150)}")
-    print(f"Number of different combinations of using minimum number of containers: {count_minimum_combinations(input, 150)}")
+    file = read_file("inputs/input.txt")
+    print(f"Number of different combinations of containers: {count_combinations(file, 150)}")
+    print(
+        f"Number of different combinations of using minimum number of containers: {count_minimum_combinations(file, 150)}")

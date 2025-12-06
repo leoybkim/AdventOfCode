@@ -2,10 +2,7 @@ from itertools import permutations
 from re import match
 from typing import List
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_info(raw_input: str) -> List[tuple[str, str, int]]:
@@ -69,6 +66,6 @@ def happiness_change(raw_input: str, include_self=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Total happiness for optimal seating arrangement: {happiness_change(input)}")
-    print(f"Total happiness for optimal seating arrangement including yourself: {happiness_change(input, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"Total happiness for optimal seating arrangement: {happiness_change(file)}")
+    print(f"Total happiness for optimal seating arrangement including yourself: {happiness_change(file, True)}")

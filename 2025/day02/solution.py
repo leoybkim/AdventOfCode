@@ -1,3 +1,6 @@
+from utils.input_reader import read_file
+
+
 def is_invalid(n: int) -> bool:
     s = str(n)
     l = len(s)
@@ -23,31 +26,27 @@ def is_invalid2(n: str) -> bool:
     return s in sliced_s
 
 
-def part_one(input_file_path: str):
+def part_one(data: str):
     sum_invalids = 0
-    with (open(input_file_path, "r") as input_file):
-        for line in input_file:
-            for r in line.split(","):
-                s, e = map(int, r.split("-"))
-                for n in range(s, e + 1):
-                    sum_invalids += n if is_invalid(n) else 0
+    for r in data.split(","):
+        s, e = map(int, r.split("-"))
+        for n in range(s, e + 1):
+            sum_invalids += n if is_invalid(n) else 0
 
     return sum_invalids
 
 
-def part_two(input_file_path: str):
+def part_two(data: str):
     sum_invalids = 0
-    with (open(input_file_path, "r") as input_file):
-        for line in input_file:
-            for r in line.split(","):
-                s, e = map(int, r.split("-"))
-                for n in range(s, e + 1):
-                    sum_invalids += n if is_invalid2(n) else 0
+    for r in data.split(","):
+        s, e = map(int, r.split("-"))
+        for n in range(s, e + 1):
+            sum_invalids += n if is_invalid2(n) else 0
 
     return sum_invalids
 
 
 if __name__ == "__main__":
-    file = "inputs/input.txt"
+    file = read_file("inputs/input.txt")
     print(f"Sum of invalid IDs: {part_one(file)}")
     print(f"Sum of invalid IDs with new rules: {part_two(file)}")

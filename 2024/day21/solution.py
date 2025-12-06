@@ -1,6 +1,8 @@
 from functools import lru_cache
 from typing import List
 
+from utils.input_reader import read_file
+
 NUMERIC_KEYPAD = {
     "7": (0, 0), "8": (0, 1), "9": (0, 2),
     "4": (1, 0), "5": (1, 1), "6": (1, 2),
@@ -12,11 +14,6 @@ DIRECTIONAL_KEYPAD = {
     "#": (0, 0), "^": (0, 1), "A": (0, 2),
     "<": (1, 0), "v": (1, 1), ">": (1, 2),
 }
-
-
-def read_file(input_file_path: str) -> str:
-    with open(input_file_path) as input_file:
-        return input_file.read()
 
 
 def format_data(raw_data: str) -> List[str]:

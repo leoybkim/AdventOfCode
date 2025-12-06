@@ -2,10 +2,7 @@ from collections import Counter
 from itertools import combinations_with_replacement
 from re import match
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def parse_info(raw_input: str) -> dict:
@@ -64,6 +61,6 @@ def highest_scoring_cookie(raw_input: str, calorie_restriction=False) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"Total score of the highest-scoring cookie: {highest_scoring_cookie(input)}")
-    print(f"Total score of the highest-scoring cookie with 500 calories: {highest_scoring_cookie(input, True)}")
+    file = read_file("inputs/input.txt")
+    print(f"Total score of the highest-scoring cookie: {highest_scoring_cookie(file)}")
+    print(f"Total score of the highest-scoring cookie with 500 calories: {highest_scoring_cookie(file, True)}")

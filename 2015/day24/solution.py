@@ -1,10 +1,7 @@
 import math
 from itertools import combinations
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def quantum_entanglement(raw_input: str, groups=3) -> int:
@@ -22,6 +19,7 @@ def quantum_entanglement(raw_input: str, groups=3) -> int:
 
 
 if __name__ == "__main__":
-    input = read_file("inputs/input.txt")
-    print(f"The quantum entanglement of the first group of packages for 3 groups: {quantum_entanglement(input)}")
-    print(f"The quantum entanglement of the first group of packages for 4 groups : {quantum_entanglement(input, groups=4)}")
+    file = read_file("inputs/input.txt")
+    print(f"The quantum entanglement of the first group of packages for 3 groups: {quantum_entanglement(file)}")
+    print(
+        f"The quantum entanglement of the first group of packages for 4 groups : {quantum_entanglement(file, groups=4)}")

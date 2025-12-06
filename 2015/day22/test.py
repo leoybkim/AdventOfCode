@@ -1,13 +1,13 @@
 import unittest
 
-from solution import *
+from .solution import *
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.input_file = read_file("inputs/input.txt")
-        self.test1_file = read_file("inputs/test1.txt")
-        self.test2_file = read_file("inputs/test2.txt")
+        self.input_file = read_file("inputs/input.txt", __file__)
+        self.test1_file = read_file("inputs/test1.txt", __file__)
+        self.test2_file = read_file("inputs/test2.txt", __file__)
 
     def testPart1(self):
         self.assertEqual(1824, find_min_mana_required(self.input_file))

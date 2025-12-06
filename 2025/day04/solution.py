@@ -1,8 +1,10 @@
-def parse_file(input_file_path: str) -> list[list[str]]:
+from utils.input_reader import read_file
+
+
+def parse_file(data: str) -> list[list[str]]:
     grid = []
-    with (open(input_file_path, "r") as input_file):
-        for line in input_file:
-            grid.append(list(line.strip()))
+    for line in data.splitlines():
+        grid.append(list(line.strip()))
     return grid
 
 
@@ -18,9 +20,9 @@ def can_access(x: int, y: int, grid: list[list[str]]) -> bool:
     return True
 
 
-def part_one(input_file_path: str):
+def part_one(data: str):
     output = 0
-    grid = parse_file(input_file_path)
+    grid = parse_file(data)
 
     R, C = len(grid), len(grid[0])
     for r in range(R):
@@ -30,8 +32,8 @@ def part_one(input_file_path: str):
     return output
 
 
-def part_two(input_file_path: str):
-    grid = parse_file(input_file_path)
+def part_two(data: str):
+    grid = parse_file(data)
 
     R, C = len(grid), len(grid[0])
     remove_count = 0
@@ -49,6 +51,6 @@ def part_two(input_file_path: str):
 
 
 if __name__ == "__main__":
-    file = "inputs/input.txt"
+    file = read_file("inputs/input.txt")
     print(f"Number of rolls of paper can be accessed by forklift: {part_one(file)}")
     print(f"Number of rolls of paper can be removed by Elves and forklifts: {part_one(file)}")

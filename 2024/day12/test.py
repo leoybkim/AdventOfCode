@@ -1,15 +1,16 @@
 import unittest
-from solution import *
+
+from .solution import *
 
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.input_file = read_file("inputs/input.txt")
-        self.test_file1 = read_file("inputs/test1.txt")
-        self.test_file2 = read_file("inputs/test2.txt")
-        self.test_file3 = read_file("inputs/test3.txt")
-        self.test_file4 = read_file("inputs/test4.txt")
-        self.test_file5 = read_file("inputs/test5.txt")
+        self.input_file = read_file("inputs/input.txt", __file__)
+        self.test_file1 = read_file("inputs/test1.txt", __file__)
+        self.test_file2 = read_file("inputs/test2.txt", __file__)
+        self.test_file3 = read_file("inputs/test3.txt", __file__)
+        self.test_file4 = read_file("inputs/test4.txt", __file__)
+        self.test_file5 = read_file("inputs/test5.txt", __file__)
 
     def testPart1(self):
         self.assertEqual(1344578, total_price(self.input_file))

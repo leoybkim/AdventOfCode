@@ -1,9 +1,6 @@
 import collections
 
-
-def read_file(file_path: str) -> str:
-    with open(file_path) as input_file:
-        return input_file.read()
+from utils.input_reader import read_file
 
 
 def corrected_message(raw_input: str, part2=False) -> str:
