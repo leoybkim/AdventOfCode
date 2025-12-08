@@ -12,11 +12,11 @@ def part_one(data: str, connections: int):
     positions = []
     shortest = []
 
-    # Check n*(n-1)/2 connections
-
     for line in data.splitlines():
         positions.append(tuple(map(int, line.split(","))))
 
+    # Keep the top 20 connections with the shortest distances
+    # Use negative distances to make Max Heap
     for i in range(len(positions) - 1):
         for j in range(i + 1, len(positions)):
             if len(shortest) < connections:
@@ -72,6 +72,7 @@ def part_two(data: str) -> int:
     for line in data.splitlines():
         positions.append(tuple(map(int, line.split(","))))
 
+    # Check n*(n-1)/2 connections
     for i in range(len(positions) - 1):
         for j in range(i + 1, len(positions)):
             heapq.heappush(shortest, (distance(positions[i], positions[j]), positions[i], positions[j]))
@@ -109,6 +110,7 @@ def part_two(data: str) -> int:
             group_lookup[a] = group_id
             group_lookup[b] = group_id
 
+        # Return the product of X coordinates when the last connection to build the final single circuit is found
         if len(group_member_lookup) == 1 and len(list(group_member_lookup.values())[0]) == len(positions):
             return a[0] * b[0]
 
