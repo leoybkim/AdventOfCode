@@ -11,8 +11,8 @@ class Test(unittest.TestCase):
     def testPart1(self):
         self.assertEqual(4759531084, part_one(self.input_file))
 
-    # def testPart2(self):
-    #     self.assertEqual(4759531084, part_two(self.input_file))
+    def testPart2(self):
+        self.assertEqual(1539238860, part_two(self.input_file))
 
     def testPart1Example(self):
         self.assertEqual(50, part_one(self.test_file))
