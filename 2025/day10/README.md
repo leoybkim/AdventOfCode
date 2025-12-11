@@ -1,0 +1,3 @@
+# Day 10
+
+[adventofcode.com/2025/day/10](https://adventofcode.com/2025/day/10)

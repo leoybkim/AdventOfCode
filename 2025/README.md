@@ -10,4 +10,5 @@
 [day 6](day06/README.md)\
 [day 7](day07/README.md)\
 [day 8](day08/README.md)\
-[day 9](day09/README.md)
+[day 9](day09/README.md)\
+[day 10](day10/README.md)
